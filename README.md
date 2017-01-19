@@ -7,7 +7,7 @@ This script will automate the process of configuring a Raspberry Pi 3 to serve a
 Before running the script, you should have the Pi plugged into a monitor with a keyboard and an ethernet connection to the Internet. It is not possible to run the script over the network as it will disable the wireless interface. It may be possible to do it over the ethernet connection but this has not been tested so far.
 
 ## Status
-Currently a work in progress. Not functional as of yet, but close.
+Currently a work in progress. Not functional as of yet and a lot of the code needs to be cleaned up and optimized. Quick prototyping at the moment and cleaning everything up at the end.
 
 ## TODO
 + Automagic install mode prompts and logic
