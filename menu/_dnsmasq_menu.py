@@ -149,6 +149,12 @@ def menu_wizard_dnsmasq():
         # the function, and save it's return to the appropriate key in
         # dnsmasq_conf_default_d (look in core/core.py to find its keys:values)
 
+        # Use the user's return to match one of the choices and use that string
+        # to as the key to the selections dict to call the appropriate function
+        my_menu_wizard_dnsmasq_selections_d[
+            my_menu_wizard_dnsmasq_choices_l[int(my_menu_wizard_dnsmasq_return)-1]
+            ]()
+
         # NOTE: This function should return dnsmasq_conf_default_d when done.
 
         # XXX DEBUG: Print the return value and the config dictionary.
