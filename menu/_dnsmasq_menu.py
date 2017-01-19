@@ -70,33 +70,33 @@ dns_d = {
 }
 
 
-def menu_wizard_dnsmasq_upsteam(ip_settings):
+def dnsmasq_upstream_menu(ip_settings):
     '''This menu will present a list of possible upstream DNS
         providers for the user to select.'''
 
     # Declare info string and title for DNS menu
-    menu_wizard_dnsmasq_upsteam_info_str = '[Upstream DNS servers selection]'
-    menu_wizard_dnsmasq_upsteam_title_str = '[Available DNS Servers]'
+    dnsmasq_upstream_menu_info_str = '[Upstream DNS servers selection]'
+    dnsmasq_upstream_menu_title_str = '[Available DNS Servers]'
 
     # Declare a list of choices available
-    menu_wizard_dnsmasq_upsteam_choices_l = list(dns_d.keys())
+    dnsmasq_upstream_menu_choices_l = list(dns_d.keys())
 
     # Declare a prompt string for the menu
-    menu_wizard_dnsmasq_upstream_prompt = 'DNS Selection: '
+    dnsmasq_upstream_menu_prompt = 'DNS Selection: '
 
     # Instantiate and configure the menu object
-    menu_wizard_dnsmasq_upstream_menu = menu3.Menu(ALLOW_QUIT=True)
-    menu_wizard_dnsmasq_upstream_menu.info(
-        menu_wizard_dnsmasq_upsteam_info_str
+    dnsmasq_upstream_menu_menu = menu3.Menu(ALLOW_QUIT=True)
+    dnsmasq_upstream_menu_menu.info(
+        dnsmasq_upstream_menu_info_str
         )
 
     while True:
         # display the menu to the user until they quit
-        menu_wizard_dnsmasq_upstream_menu_return = \
-            menu_wizard_dnsmasq_upstream_menu.menu(
-                title=menu_wizard_dnsmasq_upsteam_title_str,
-                choices=menu_wizard_dnsmasq_upsteam_choices_l,
-                prompt=menu_wizard_dnsmasq_upstream_prompt
+        dnsmasq_upstream_menu_menu_return = \
+            dnsmasq_upstream_menu_menu.menu(
+                title=dnsmasq_upstream_menu_title_str,
+                choices=dnsmasq_upstream_menu_choices_l,
+                prompt=dnsmasq_upstream_menu_prompt
             )
 
         # function to return the list of values based on selection
@@ -115,33 +115,33 @@ def menu_wizard_dnsmasq():
     from ..core.core import dnsmasq_conf_default_d
 
     # Define the variables that are needed for the configuration menu.
-    my_menu_wizard_dnsmasq_info_str = '[dnsmasq Config Menu Info]'
-    my_menu_wizard_dnsmasq_title_str = '[dnsmasq Config Menu Title]'
+    main_dnsmasq_info_str = '[Configure DNS and DHCP settings]'
+    main_dnsmasq_title_str = '[dnsmasq Configuration Menu]'
 
     # Define a list of choices available to the user
-    my_menu_wizard_dnsmasq_choices_l = [
+    main_dnsmasq_choices_l = [
         'Upstream DNS',
         "DHCP Settings"
     ]
 
     # Declare prompt and return strings for the dnsmasq menu.
-    my_menu_wizard_dnsmasq_prompt_str = '[dnsmasq Config Prompt]: '
+    main_dnsmasq_prompt_str = '[dnsmasq config]: '
 
     # Instantiate and configure the menu object.
-    my_menu_wizard = menu3.Menu(ALLOW_QUIT=True)
-    my_menu_wizard.info(my_menu_wizard_dnsmasq_info_str)
+    main = menu3.Menu(ALLOW_QUIT=True)
+    main.info(main_dnsmasq_info_str)
 
     while True:
         # Present the menu to the user and store the return value.
-        my_menu_wizard_dnsmasq_return = my_menu_wizard.menu(
-            title=my_menu_wizard_dnsmasq_title_str,
-            choices=my_menu_wizard_dnsmasq_choices_l,
-            prompt=my_menu_wizard_dnsmasq_prompt_str,
+        main_dnsmasq_return = main.menu(
+            title=main_dnsmasq_title_str,
+            choices=main_dnsmasq_choices_l,
+            prompt=main_dnsmasq_prompt_str,
         )
 
         # Declare a dictionary that link the selections to functions.
-        my_menu_wizard_dnsmasq_selections_d = {
-            'Upstream DNS': menu_wizard_dnsmasq_upsteam,
+        main_dnsmasq_selections_d = {
+            'Upstream DNS': dnsmasq_upstream_menu,
             'DHCP Settings': dhcp_ranger
         }
 
@@ -149,7 +149,13 @@ def menu_wizard_dnsmasq():
         # the function, and save it's return to the appropriate key in
         # dnsmasq_conf_default_d (look in core/core.py to find its keys:values)
 
+        # Use the user's return to match one of the choices and use that string
+        # to as the key to the selections dict to call the appropriate function
+        main_dnsmasq_selections_d[
+            main_dnsmasq_choices_l[int(main_dnsmasq_return)-1]
+            ]()
+
         # NOTE: This function should return dnsmasq_conf_default_d when done.
 
         # XXX DEBUG: Print the return value and the config dictionary.
-        print(my_menu_wizard_dnsmasq_return)
+        print(main_dnsmasq_return)
