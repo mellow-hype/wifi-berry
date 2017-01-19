@@ -1,0 +1,2 @@
+NOTE: Scaffold files should be named with two prepended underscores.
+  For example, '__example_menu.py' or '__scaffold.py'
