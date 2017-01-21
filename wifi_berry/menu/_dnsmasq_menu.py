@@ -7,28 +7,26 @@ import menu3
 # --------------------------------------------------------------------------- #
 def dhcp_ranger(network):
     '''Get DHCP settings'''
-    print('Provide the host address portion (e.g. 10.0.0.x)')
     
-    while(True):
-        start_str = 'Start of range(1-254): '
-        start = input(start_str)
+    start_str = 'Start of range(1-254): '
+    start = input(start_str)
 
-        end_str = 'End of range(1-254) '
-        end = input(end_str)
+    end_str = 'End of range(1-254) '
+    end = input(end_str)
 
-        lease_str = 'Lease time (hrs): '
-        lease = input(lease_str)
+    lease_str = 'Lease time (hrs): '
+    lease = input(lease_str)
 
-        try:
-            if int(end) <= int(start):
-                print('End of range must be greater than start. Retry')
-                break
-            elif int(lease) < 1:
-                print('Lease time must be at least one hour. Retry')
-                break
-        except TypeError:
-            print('Wrong input type. Only numeric characters are needed.')
-            break
+    try:
+        if int(end) <= int(start):
+            print('End of range must be greater than start. Retry')
+            dhcp_ranger(network)
+        elif int(lease) < 1:
+            print('Lease time must be at least one hour. Retry')
+            dhcp_ranger(network)
+    except TypeError:
+        print('Wrong input type. Only numeric characters are needed.')
+        dhcp_ranger(network)
 
     dhcp_string = \
         network[:len(network)-1] + str(start) + ',' + network[:len(network)-1] +\
