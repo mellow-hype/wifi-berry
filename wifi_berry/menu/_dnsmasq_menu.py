@@ -105,7 +105,7 @@ def menu_wizard_dnsmasq(presets_d):
     '''dnsmasq configuration main menu'''
 
     # Import the default dnsmasq config values
-    from ..core.core import dnsmasq_conf_default_d
+    from ..core.config import dnsmasq_conf_default_d
     dnsmasq_conf_d = dnsmasq_conf_default_d
 
     # Set the interface value from presets_d
@@ -147,10 +147,10 @@ def menu_wizard_dnsmasq(presets_d):
         # the function, and save it's return to the appropriate key in
         # dnsmasq_conf_d (look in core/core.py to find its keys:values)
         if main_dnsmasq_choices_l[int(main_dnsmasq_return)-1] == "Upstream DNS":
-            dnsmasq_conf_d["upstream"] = /
+            dnsmasq_conf_d["upstream"] = \
                 main_dnsmasq_selections_d["Upstream DNS"]()
         elif main_dnsmasq_choices_l[int(main_dnsmasq_return)-1] == "DHCP Settings":
-            dnsmasq_conf_d["dhcp-string"] = /
+            dnsmasq_conf_d["dhcp-string"] = \
                 main_dnsmasq_selections_d["DHCP Settings"](presets_d["network"])
         else:
             return dnsmasq_conf_d

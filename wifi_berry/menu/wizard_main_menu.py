@@ -40,7 +40,7 @@ def menu_wizard_ip():
 
     # Import the IP configuration default dictionary from
     # the core module, and assign the dictionary to a local variable.
-    from ..core.core import ip_conf_default_d
+    from ..core.config import ip_conf_default_d
     ip_settings_d = ip_conf_default_d
 
     # Present the menu to the user; my_menu_wizard_ip_return is a dictionary
@@ -97,7 +97,7 @@ def menu_wizard_hostapd_interface():
 
     # Find a list of available interfaces, using
     # the function defined in the core module.
-    from ..core.core import available_iface
+    from ..core.config import available_iface
     menu_wizard_hostapd_interface_choices_l = available_iface()
 
     # Instantiate and configure the menu
@@ -143,7 +143,7 @@ def menu_wizard_hostapd():
     menu_wizard_hostapd_prompt_str = '[hostapd config]: '
 
     # Import the default configuration dictionary from the core module.
-    from ..core.core import hostapd_conf_default_d
+    from ..core.config import hostapd_conf_default_d
     hostapd_settings_d = hostapd_conf_default_d
 
     # TODO: the Interface option will present a menu with available interfaces
@@ -162,9 +162,9 @@ def menu_wizard_hostapd():
     menu_wizard_hostapd_menu.info(menu_wizard_hostapd_info_str)
 
     # Import the get_ssid() and pass_prompt() functions
-    from ..core.core import get_ssid
-    from ..core.core import pass_prompt
-    from ..core.core import get_channel
+    from ..core.config import get_ssid
+    from ..core.config import pass_prompt
+    from ..core.config import get_channel
 
     # Present the menu to the user.
     while True:
