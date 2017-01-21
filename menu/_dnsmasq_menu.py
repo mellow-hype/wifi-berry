@@ -29,7 +29,7 @@ def dhcp_ranger():
 
 
 # dnsmasq upstream DNS provider configuration menu
-def dnsmasq_upstream_menu(ip_settings):
+def dnsmasq_upstream_menu():
     '''This menu will present a list of possible upstream DNS
         providers for the user to select.'''
 
@@ -81,20 +81,17 @@ def dnsmasq_upstream_menu(ip_settings):
                 prompt=dnsmasq_upstream_menu_prompt
             )
 
-        # NOTE: Use same method as in menu_wizard_hostapd_interface to get the
-        # selection: generate a dictionary with numbers as keys and the choices
-        # as values, etc.
+        
 
 
-
-        # 
 
 # Main dnsmasq configuration menu
-def menu_wizard_dnsmasq():
-    '''This is the configuration menu for the dnsmasq settings.'''
+def menu_wizard_dnsmasq(presets_d):
+    '''dnsmasq configuration main menu'''
 
     # Import the default dnsmasq config values
     from ..core.core import dnsmasq_conf_default_d
+    dnsmasq_conf_d = dnsmasq_conf_default_d
 
     # Define the variables that are needed for the configuration menu.
     main_dnsmasq_info_str = '[Configure DNS and DHCP settings]'
@@ -129,15 +126,13 @@ def menu_wizard_dnsmasq():
 
         # TODO: Selection handling -- check which option the user chose, call
         # the function, and save it's return to the appropriate key in
-        # dnsmasq_conf_default_d (look in core/core.py to find its keys:values)
+        # dnsmasq_conf_d (look in core/core.py to find its keys:values)
+        if main_dnsmasq_choices_l[int(main_dnsmasq_return)-1] == "Upstream DNS":
+            dnsmasq_conf_d["upstream"] = /
+                main_dnsmasq_selections_d["Upstream DNS"]()
+        
+        elif main_dnsmasq_choices_l[int(main_dnsmasq_return)-1] == "DHCP Settings":
+            dnsmasq_conf_d["dhcp-string"] = /
+                main_dnsmasq_selections_d["DHCP Settings"]()
 
-        # Use the user's return to match one of the choices and use that string
-        # to as the key to the selections dict to call the appropriate function
-        main_dnsmasq_selections_d[
-            main_dnsmasq_choices_l[int(main_dnsmasq_return)-1]
-            ]()
-
-        # NOTE: This function should return dnsmasq_conf_default_d when done.
-
-        # XXX DEBUG: Print the return value and the config dictionary.
-        print(main_dnsmasq_return)
+        
