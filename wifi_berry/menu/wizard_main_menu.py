@@ -38,11 +38,6 @@ def menu_wizard_ip():
     my_menu_wizard = menu3.Menu(ALLOW_QUIT=True)
     my_menu_wizard.info(my_menu_wizard_ip_info_str)
 
-    # Import the IP configuration default dictionary from
-    # the core module, and assign the dictionary to a local variable.
-    from ..core.config import ip_conf_default_d
-    ip_settings_d = ip_conf_default_d
-
     # Present the menu to the user; my_menu_wizard_ip_return is a dictionary
     # that contains the key-value pairs for the menu options.
     # We will pass values from this dictionary to the back-end for
@@ -55,8 +50,13 @@ def menu_wizard_ip():
             return_choice=my_menu_wizard_ip_return_choice_str
         )
 
+        # Import functions for checking IP addresses
         from ipaddress import IPv4Address, IPv4Network
         from ipaddress import NetmaskValueError, AddressValueError
+
+        # Import the default IP settings dict so we can plug in values
+        from ..core.config import ip_conf_default_d
+        ip_conf_d = ip_conf_default_d
 
         # Private IP/netmask validation
         try:
@@ -74,9 +74,11 @@ def menu_wizard_ip():
             ) is False:
                 raise NetmaskValueError
             else:
-                # Return the dict to the parent function
-                ip_settings_d = my_menu_wizard_ip_return
-                return ip_settings_d
+                # Save values to our settings dict and pass it back to the parent
+                # function.
+                ip_conf_d['ip'] = my_menu_wizard_ip_return['Private IP']
+                ip_conf_d['netmask'] = my_menu_wizard_ip_return['Netmask']
+                return ip_conf_d
         except NetmaskValueError:
             print("Please enter a valid netmask.", NetmaskValueError)
         except AddressValueError:
