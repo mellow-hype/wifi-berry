@@ -1,9 +1,6 @@
 # Import the menu module.
 import menu3
 
-# DNS providers dictionary. Place the IP lists defined above into a dictionary.
-
-
 # Auxiliary functions:
 # --------------------------------------------------------------------------- #
 # This section includes helper functions for input gathering, for the menu.
@@ -25,6 +22,13 @@ def dhcp_ranger():
     return dhcp_settings
 
 
+# Menus:
+# --------------------------------------------------------------------------- #
+# Main dnsmasq configuration menus
+# --------------------------------------------------------------------------- #
+
+
+# dnsmasq upstream DNS provider configuration menu
 def dnsmasq_upstream_menu(ip_settings):
     '''This menu will present a list of possible upstream DNS
         providers for the user to select.'''
@@ -85,7 +89,7 @@ def dnsmasq_upstream_menu(ip_settings):
 
         # 
 
-
+# Main dnsmasq configuration menu
 def menu_wizard_dnsmasq():
     '''This is the configuration menu for the dnsmasq settings.'''
 
