@@ -20,7 +20,7 @@ sIfaceConf = 'config/iface.conf'
 sDnsmasqConf = 'config/dnsmasq.conf'
 
 # OTHERS
-iface = "wlan0"
+iface = 'wlan0'
 hostapdDefault = '/etc/default/hostapd'
 daemonStr = '#DAEMON_CONF=""'
 daemonStrX = 'DAEMON_CONF="/etc/hostapd/hostapd.conf"'
@@ -43,9 +43,7 @@ hostapd_conf_default_d = {
 dnsmasq_conf_default_d = {
     'interface': 'wlan0',
     'upstream': '8.8.8.8',
-    'dhcp_start': '172.24.1.50',
-    'dhcp_end': '172.24.1.150',
-    'dhcp_lease': '12h'
+    'dhcp-string': '172.24.1.50,172.24.1.150,12h'
 }
 
 
