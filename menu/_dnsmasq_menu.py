@@ -5,28 +5,41 @@ import menu3
 # --------------------------------------------------------------------------- #
 # This section includes helper functions for input gathering, for the menu.
 # --------------------------------------------------------------------------- #
-def dhcp_ranger():
-    '''This function prompts the user for DHCP settings. After receiving
-        a starting IP, and ending IP, and a lease time (hours),
-        return the user's inputs as a joined string.'''
-    start_str = 'Starting IP: '
-    start_ip = input(start_str)
+def dhcp_ranger(network):
+    '''Get DHCP settings'''
+    print('Provide the host address portion (e.g. 10.0.0.x)')
+    
+    while(True):
+        start_str = 'Start of range(1-254): '
+        start = input(start_str)
 
-    end_str = 'Ending IP: '
-    end_ip = input(end_str)
+        end_str = 'End of range(1-254) '
+        end = input(end_str)
 
-    lease_str = 'Lease time: '
-    lease = input(lease_str)
+        lease_str = 'Lease time (hrs): '
+        lease = input(lease_str)
 
-    dhcp_settings = start_ip + ',' + end_ip + ',' + lease + 'h'
-    return dhcp_settings
+        try:
+            if int(end) <= int(start):
+                print('End of range must be greater than start. Retry')
+                break
+            elif int(lease) < 1:
+                print('Lease time must be at least one hour. Retry')
+                break
+        except TypeError:
+            print('Wrong input type. Only numeric characters are needed.')
+            break
+
+    dhcp_string = \
+        network[:len(network)-1] + str(start) + ',' + network[:len(network)-1] +\
+            str(end) + ',' + lease + 'h'
+    return dhcp_string
 
 
 # Menus:
 # --------------------------------------------------------------------------- #
 # Main dnsmasq configuration menus
 # --------------------------------------------------------------------------- #
-
 
 # dnsmasq upstream DNS provider configuration menu
 def dnsmasq_upstream_menu():
@@ -81,7 +94,9 @@ def dnsmasq_upstream_menu():
                 prompt=dnsmasq_upstream_menu_prompt
             )
 
-        
+        return dnsmasq_upstream_menu_selections_d[
+            dnsmasq_upstream_menu_choices_l[int(dnsmasq_upstream_menu_menu_return)-1]
+        ]
 
 
 
@@ -93,6 +108,9 @@ def menu_wizard_dnsmasq(presets_d):
     from ..core.core import dnsmasq_conf_default_d
     dnsmasq_conf_d = dnsmasq_conf_default_d
 
+    # Set the interface value from presets_d
+    dnsmasq_conf_d["iface"] = presets_d["iface"]
+
     # Define the variables that are needed for the configuration menu.
     main_dnsmasq_info_str = '[Configure DNS and DHCP settings]'
     main_dnsmasq_title_str = '[dnsmasq Configuration Menu]'
@@ -100,7 +118,8 @@ def menu_wizard_dnsmasq(presets_d):
     # Define a list of choices available to the user
     main_dnsmasq_choices_l = [
         'Upstream DNS',
-        "DHCP Settings"
+        'DHCP Settings',
+        'Done'
     ]
 
     # Declare prompt and return strings for the dnsmasq menu.
@@ -130,9 +149,8 @@ def menu_wizard_dnsmasq(presets_d):
         if main_dnsmasq_choices_l[int(main_dnsmasq_return)-1] == "Upstream DNS":
             dnsmasq_conf_d["upstream"] = /
                 main_dnsmasq_selections_d["Upstream DNS"]()
-        
         elif main_dnsmasq_choices_l[int(main_dnsmasq_return)-1] == "DHCP Settings":
             dnsmasq_conf_d["dhcp-string"] = /
-                main_dnsmasq_selections_d["DHCP Settings"]()
-
-        
+                main_dnsmasq_selections_d["DHCP Settings"](presets_d["network"])
+        else:
+            return dnsmasq_conf_d
