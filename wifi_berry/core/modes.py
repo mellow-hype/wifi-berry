@@ -12,9 +12,13 @@ def wizard_install():
 
     # -- Get IP configuration settings
     ip_config_d = menu_wizard_ip()
+    # DEBUG: 
+    print(ip_config_d)
     
     # -- Get hostapd configuration settings
     ap_config_d = menu_wizard_hostapd()
+    # DEBUG: 
+    print(ap_config_d)
 
     # -- Get dnsmasq configuration settings
     # Pass previously set values to dnsmasq menu function 
