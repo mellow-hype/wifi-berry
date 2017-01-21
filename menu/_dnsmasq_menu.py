@@ -23,50 +23,27 @@ def dhcp_ranger():
     return dhcp_settings
 
 
-# DNS providers list.
-# NOTE: These are organized in order of priority, i.e.
-# primary DNS server, followed by secondary server, etc.
-Level31 = ["209.244.0.3", "209.244.0.4"]
-Verisign = ["264.6.64.6", "64.6.65.6"]
-Google3 = ["8.8.8.8", "8.8.4.4"]
-DNSWATCH4 = ["84.200.69.80", "84.200.70.40"]
-ComodoSecure = ["8.26.56.26", "8.20.247.20"]
-OpenDNS = ["208.67.222.222", "208.67.220.220"]
-DNS_Advantage = ["156.154.70.1", "156.154.71.1"]
-NortonConnectSafe6 = ["199.85.126.10", "199.85.127.10"]
-GreenTeamDNS7 = ["81.218.119.11", "209.88.198.133"]
-SafeDNS8 = ["195.46.39.39", "195.46.39.40"]
-OpenNIC9 = ["45.32.215.96", "104.238.153.178"]
-SmartViper = ["208.76.50.50", "208.76.51.51"]
-Dyn = ["216.146.35.35", "216.146.36.36"]
-FreeDNS10 = ["37.235.1.174", "37.235.1.177"]
-AlternateDNS11 = ["198.101.242.72", "23.253.163.53"]
-YandexDNS12 = ["77.88.8.8", "77.88.8.1"]
-censurfridns = ["91.239.100.100", "89.233.43.71"]
-HurricaneElectric14 = ["74.82.42.42"]
-puntCAT15 = ["109.69.8.51"]
-
 # DNS providers dictionary. Place the IP lists defined above into a dictionary.
 dns_d = {
-    "Level31": Level31,
-    "Verisign": Verisign,
-    "Google": Google3,
-    "DNS WATCH4": DNSWATCH4,
-    "Comodo Secure DNS": ComodoSecure,
-    "OpenDNS": OpenDNS,
-    "DNS Advantage": DNS_Advantage,
-    "Norton Connect Safe6": NortonConnectSafe6,
-    "Green Team DNS7": GreenTeamDNS7,
-    "Safe DNS8": SafeDNS8,
-    "OpenNIC9": OpenNIC9,
-    "SmartViper": SmartViper,
-    "Dyn": Dyn,
-    "Free DNS10": FreeDNS10,
-    "Alternate DNS11": AlternateDNS11,
-    "Yandex DNS12": YandexDNS12,
-    "censurfridns": censurfridns,
-    "HurricaneElectric14": HurricaneElectric14,
-    "puntCAT15": puntCAT15
+    "Level31": "209.244.0.3",
+    "Verisign": "264.6.64.6",
+    "Google": "8.8.8.8",
+    "DNS WATCH4": "84.200.69.80",
+    "Comodo Secure DNS": "8.26.56.26",
+    "OpenDNS": "208.67.222.222",
+    "DNS Advantage": "156.154.70.1",
+    "Norton Connect Safe6": "199.85.126.10",
+    "Green Team DNS7": "81.218.119.11",
+    "Safe DNS8": "195.46.39.39",
+    "OpenNIC9": "45.32.215.96",
+    "SmartViper": "208.76.50.50",
+    "Dyn": "216.146.35.35",
+    "Free DNS10": "37.235.1.174",
+    "Alternate DNS11": "198.101.242.72",
+    "Yandex DNS12": "77.88.8.8",
+    "censurfridns": "91.239.100.100",
+    "HurricaneElectric14": "74.82.42.42",
+    "puntCAT15": "109.69.8.51"
 }
 
 
@@ -99,13 +76,14 @@ def dnsmasq_upstream_menu(ip_settings):
                 prompt=dnsmasq_upstream_menu_prompt
             )
 
-        # function to return the list of values based on selection
-        def ret_selection(dns_selection):
-            return dns_selection
-
         # NOTE: Use same method as in menu_wizard_hostapd_interface to get the
         # selection: generate a dictionary with numbers as keys and the choices
         # as values, etc.
+
+        # Create selections dict and copy over dns_d 
+        dnsmasq_upstream_menu_selections_d = dns_d
+
+        # 
 
 
 def menu_wizard_dnsmasq():
