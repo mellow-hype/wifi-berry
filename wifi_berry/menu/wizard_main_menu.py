@@ -69,7 +69,7 @@ def menu_wizard_ip():
                 raise AddressValueError
             # check if the netmask is valid
             elif IPv4Network(
-                    my_menu_wizard_ip_return['Private IP'] + "/" +
+                 my_menu_wizard_ip_return['Private IP'] + "/" +
                     my_menu_wizard_ip_return['Netmask'], strict=False
             ) is False:
                 raise NetmaskValueError
