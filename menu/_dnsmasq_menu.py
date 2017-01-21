@@ -1,6 +1,8 @@
 # Import the menu module.
 import menu3
 
+# DNS providers dictionary. Place the IP lists defined above into a dictionary.
+
 
 # Auxiliary functions:
 # --------------------------------------------------------------------------- #
@@ -23,30 +25,6 @@ def dhcp_ranger():
     return dhcp_settings
 
 
-# DNS providers dictionary. Place the IP lists defined above into a dictionary.
-dns_d = {
-    "Level31": "209.244.0.3",
-    "Verisign": "264.6.64.6",
-    "Google": "8.8.8.8",
-    "DNS WATCH4": "84.200.69.80",
-    "Comodo Secure DNS": "8.26.56.26",
-    "OpenDNS": "208.67.222.222",
-    "DNS Advantage": "156.154.70.1",
-    "Norton Connect Safe6": "199.85.126.10",
-    "Green Team DNS7": "81.218.119.11",
-    "Safe DNS8": "195.46.39.39",
-    "OpenNIC9": "45.32.215.96",
-    "SmartViper": "208.76.50.50",
-    "Dyn": "216.146.35.35",
-    "Free DNS10": "37.235.1.174",
-    "Alternate DNS11": "198.101.242.72",
-    "Yandex DNS12": "77.88.8.8",
-    "censurfridns": "91.239.100.100",
-    "HurricaneElectric14": "74.82.42.42",
-    "puntCAT15": "109.69.8.51"
-}
-
-
 def dnsmasq_upstream_menu(ip_settings):
     '''This menu will present a list of possible upstream DNS
         providers for the user to select.'''
@@ -55,8 +33,31 @@ def dnsmasq_upstream_menu(ip_settings):
     dnsmasq_upstream_menu_info_str = '[Upstream DNS servers selection]'
     dnsmasq_upstream_menu_title_str = '[Available DNS Servers]'
 
-    # Declare a list of choices available
-    dnsmasq_upstream_menu_choices_l = list(dns_d.keys())
+    # Create selections dict 
+    dnsmasq_upstream_menu_selections_d = {
+        "Level31": "209.244.0.3",
+        "Verisign": "264.6.64.6",
+        "Google": "8.8.8.8",
+        "DNS WATCH4": "84.200.69.80",
+        "Comodo Secure DNS": "8.26.56.26",
+        "OpenDNS": "208.67.222.222",
+        "DNS Advantage": "156.154.70.1",
+        "Norton Connect Safe6": "199.85.126.10",
+        "Green Team DNS7": "81.218.119.11",
+        "Safe DNS8": "195.46.39.39",
+        "OpenNIC9": "45.32.215.96",
+        "SmartViper": "208.76.50.50",
+        "Dyn": "216.146.35.35",
+        "Free DNS10": "37.235.1.174",
+        "Alternate DNS11": "198.101.242.72",
+        "Yandex DNS12": "77.88.8.8",
+        "censurfridns": "91.239.100.100",
+        "HurricaneElectric14": "74.82.42.42",
+        "puntCAT15": "109.69.8.51"
+    }
+
+    # Fill our choices list using keys from selections
+    dnsmasq_upstream_menu_choices_l = list(dnsmasq_upstream_menu_selections_d.keys())
 
     # Declare a prompt string for the menu
     dnsmasq_upstream_menu_prompt = 'DNS Selection: '
@@ -80,8 +81,7 @@ def dnsmasq_upstream_menu(ip_settings):
         # selection: generate a dictionary with numbers as keys and the choices
         # as values, etc.
 
-        # Create selections dict and copy over dns_d 
-        dnsmasq_upstream_menu_selections_d = dns_d
+
 
         # 
 
