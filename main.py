@@ -9,7 +9,7 @@
 import menu3
 
 # Import core/install_modes module
-from core import install_modes
+from wifi_berry.core.modes import automagic_install, wizard_install
 
 def _menu_main_pre():
     """This functions contains any system/etc. actions we might need to """
@@ -49,8 +49,8 @@ def menu_main():
         # where the key is the menu choice text and the value is a function
         # pointer.
         menu_main_selections_d = {
-            'Automagic Install': core.install_modes.automagic_install,
-            'Wizard Install': core.install_modes.wizard_install,
+            'Automagic Install': automagic_install,
+            'Wizard Install': wizard_install,
             'Help': '',
         }
 

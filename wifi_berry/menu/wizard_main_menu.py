@@ -38,11 +38,6 @@ def menu_wizard_ip():
     my_menu_wizard = menu3.Menu(ALLOW_QUIT=True)
     my_menu_wizard.info(my_menu_wizard_ip_info_str)
 
-    # Import the IP configuration default dictionary from
-    # the core module, and assign the dictionary to a local variable.
-    from ..core.core import ip_conf_default_d
-    ip_settings_d = ip_conf_default_d
-
     # Present the menu to the user; my_menu_wizard_ip_return is a dictionary
     # that contains the key-value pairs for the menu options.
     # We will pass values from this dictionary to the back-end for
@@ -55,8 +50,13 @@ def menu_wizard_ip():
             return_choice=my_menu_wizard_ip_return_choice_str
         )
 
+        # Import functions for checking IP addresses
         from ipaddress import IPv4Address, IPv4Network
         from ipaddress import NetmaskValueError, AddressValueError
+
+        # Import the default IP settings dict so we can plug in values
+        from ..core.config import ip_conf_default_d
+        ip_conf_d = ip_conf_default_d
 
         # Private IP/netmask validation
         try:
@@ -69,14 +69,16 @@ def menu_wizard_ip():
                 raise AddressValueError
             # check if the netmask is valid
             elif IPv4Network(
-                    my_menu_wizard_ip_return['Private IP'] + "/" +
+                 my_menu_wizard_ip_return['Private IP'] + "/" +
                     my_menu_wizard_ip_return['Netmask'], strict=False
             ) is False:
                 raise NetmaskValueError
             else:
-                # Return the dict to the parent function
-                ip_settings_d = my_menu_wizard_ip_return
-                return ip_settings_d
+                # Save values to our settings dict and pass it back to the parent
+                # function.
+                ip_conf_d['ip'] = my_menu_wizard_ip_return['Private IP']
+                ip_conf_d['netmask'] = my_menu_wizard_ip_return['Netmask']
+                return ip_conf_d
         except NetmaskValueError:
             print("Please enter a valid netmask.", NetmaskValueError)
         except AddressValueError:
@@ -97,7 +99,7 @@ def menu_wizard_hostapd_interface():
 
     # Find a list of available interfaces, using
     # the function defined in the core module.
-    from ..core.core import available_iface
+    from ..core.config import available_iface
     menu_wizard_hostapd_interface_choices_l = available_iface()
 
     # Instantiate and configure the menu
@@ -143,7 +145,7 @@ def menu_wizard_hostapd():
     menu_wizard_hostapd_prompt_str = '[hostapd config]: '
 
     # Import the default configuration dictionary from the core module.
-    from ..core.core import hostapd_conf_default_d
+    from ..core.config import hostapd_conf_default_d
     hostapd_settings_d = hostapd_conf_default_d
 
     # TODO: the Interface option will present a menu with available interfaces
@@ -162,9 +164,9 @@ def menu_wizard_hostapd():
     menu_wizard_hostapd_menu.info(menu_wizard_hostapd_info_str)
 
     # Import the get_ssid() and pass_prompt() functions
-    from ..core.core import get_ssid
-    from ..core.core import pass_prompt
-    from ..core.core import get_channel
+    from ..core.config import get_ssid
+    from ..core.config import pass_prompt
+    from ..core.config import get_channel
 
     # Present the menu to the user.
     while True:
