@@ -4,10 +4,6 @@
 
 import string
 
-# OTHERS
-iface = 'wlan0'
-
-
 # DEFAULT CONFIGURATION VALUES
 ip_conf_default_d = {
     'ip': '172.24.1.1',
@@ -74,7 +70,7 @@ class BerryInit:
 
 
     # Reload dhcpcd and bring wlan0 down and then up to reload config
-    def service_reload():
+    def service_reload(iface):
         from subprocess import call
         print("Restarting dhcpcd and reloading interface configuration...")
         call(["sudo", "service", "dhcpcd", "restart"])
