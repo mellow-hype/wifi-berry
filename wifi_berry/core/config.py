@@ -6,9 +6,7 @@ import string
 
 # OTHERS
 iface = 'wlan0'
-hostapdDefault = '/etc/default/hostapd'
-daemonStr = '#DAEMON_CONF=""'
-daemonStrX = 'DAEMON_CONF="/etc/hostapd/hostapd.conf"'
+
 
 # DEFAULT CONFIGURATION VALUES
 ip_conf_default_d = {
@@ -227,6 +225,7 @@ class BerryInstall:
         f_orig.close()
 
 
+
     # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
     def hostapd_conf(settings_d=hostapd_conf_default_d):
         # open source config for reading and dst config for writing
@@ -252,6 +251,21 @@ class BerryInstall:
         # close up
         f_orig.close()
         f_new.close()
+
+        # edit /etc/default/hostapd to point daemon to our config:
+        # we use keep_orig() to make a new copy of the existing config on the system and open it for reading and 
+        # open the old existing copy to replace the desired string
+        hostapdDefault = '/etc/default/hostapd'
+        daemonStr = '#DAEMON_CONF=""'
+        daemonStrX = 'DAEMON_CONF="/etc/hostapd/hostapd.conf"'
+        f_original = open(keep_orig(hostapdDefault), 'r')
+        f_new = open(hostapdDefault, 'w')
+        print("Editing /etc/default/hostapd...")
+        for line in f_original:
+            f_new.write(line.replace(daemonStr, daemonStrX))
+        f_original.close()
+        f_new.close()
+        print("Done editing /etc/default/hostapd.\n hostapd configuration complete.")
 
 # --------------------------------------------------------------------------- #
 # Wizard Mode Input utilities: auxiliary functions for gathering input
