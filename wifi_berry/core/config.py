@@ -63,7 +63,7 @@ class BerryInit:
 
 
     # Configure dhcpcd
-    def mod_dhcpcd():
+    def mod_dhcpcd(iface):
         dDhcpcdConf = '/etc/dhcpcd.conf'
         keep_orig(dDhcpcdConf)
         # append 'denyinterfaces wlan0' to the end of file
