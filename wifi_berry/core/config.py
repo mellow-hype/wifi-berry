@@ -326,3 +326,33 @@ def available_iface():
                 if char == ':':
                     iface_l[x] = line[:index]
     return iface_l
+
+# Prompt user for desired AP passphrase with verification
+def pass_prompt():
+    prompt = 'Desired passphrase for access point: '
+    prompt2 = 'Repeat password for verification: '
+    pass_1 = ''
+    while len(pass_1) < 8:
+        from getpass import getpass
+        pass_1 = getpass(prompt)
+        # enforce min passphrase length
+        if len(pass_1) < 8:
+            print("[Error]: Passphrase must be at least 8 characters.")
+            continue
+        # enforce max passphrase length (wpa2 sets max at 63 chars)
+        elif len(pass_1) > 63:
+            print("[Error]: Passphrase must be less than 64 characters.")
+            continue
+        # enforce passphrase contain only printable characters
+        elif all(c in string.printable for c in pass_1) is False:
+            print("[Error]: Passphrase can only contain printable characters.")
+            continue
+        else:
+            # ask for passphrase again for verification
+            pass_2 = getpass(prompt2)
+            if pass_2 == pass_1:
+                return pass_2
+            else:
+                print("[Error]: Passphrases do not match. Please try again.")
+                pass_1 = ''
+                continue
