@@ -211,13 +211,7 @@ class BerryInstall:
 
 
     # dnsmasq configuration @ /etc/dnsmasq.conf
-    def dnsmasq_conf(iface_in, upstr, dhcp_set):
-        # default values that will be in the source config
-        default_vals = dict()
-        default_vals['iface'] = "wlan0"
-        default_vals['upstream'] = "8.8.8.8"
-        default_vals['dhcp_rng'] = "172.24.1.50,172.24.1.150,12h"
-
+    def dnsmasq_conf(settings_d=dnsmasq_conf_default_d):
         # open source config for reading and dst config for writing
         f_orig = open(sDnsmasqConf, 'r')
         f_new = open(dDnsmasqConf, 'w')
@@ -226,14 +220,14 @@ class BerryInstall:
         # custom values
         for line in f_orig:
             # modify interface
-            if default_vals['iface'] in line:
-                f_new.write(line.replace(default_vals['iface'], iface_in))
+            if dnsmasq_conf_default_d['interface'] in line:
+                f_new.write(line.replace(dnsmasq_conf_default_d['interface'], iface_in))
             # modify upstream DNS server
-            elif default_vals['upstream'] in line:
-                f_new.write(line.replace(default_vals['upstream'], upstr))
+            elif dnsmasq_conf_default_d['upstream'] in line:
+                f_new.write(line.replace(dnsmasq_conf_default_d['upstream'], upstr))
             # modify dhcp range and least time limit
-            elif default_vals['dhcp_rng'] in line:
-                f_new.write(line.replace(default_vals['dhcp_rng'], dhcp_set))
+            elif dnsmasq_conf_default_d['dhcp-string'] in line:
+                f_new.write(line.replace(dnsmasq_conf_default_d['dhcp-string'], settings_d["dhcp-string"]))
             else:
                 f_new.write(line)
 
