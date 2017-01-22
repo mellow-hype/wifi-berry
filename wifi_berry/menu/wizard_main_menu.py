@@ -20,8 +20,8 @@ def menu_wizard_ip():
     """This is the configuration menu for IP settings."""
 
     # Define the variables that are needed for the menu
-    my_menu_wizard_ip_info_str = '[IP Config Menu Info Placeholder]'
-    my_menu_wizard_ip_title_str = '[IP Config Menu Title Placeholder]'
+    my_menu_wizard_ip_info_str = '[Configure the static IP settings]'
+    my_menu_wizard_ip_title_str = '[IP Configuration]'
 
     # This dict will contains key-value pairs for the menu items.
     # This is how we will reference the data.
@@ -31,7 +31,7 @@ def menu_wizard_ip():
     }
 
     # Prompt and return choice strings for the menu.
-    my_menu_wizard_ip_prompt_str = '[IP Config]: '
+    my_menu_wizard_ip_prompt_str = '[IP]: '
     my_menu_wizard_ip_return_choice_str = 'Done'
 
     # Instantiate and configure the menu object.
