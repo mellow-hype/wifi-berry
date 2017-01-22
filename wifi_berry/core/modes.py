@@ -24,7 +24,7 @@ def automagic_install(
     config.ipconf(ip_settings)
 
     # Restart dhcpcd and reload config for interface
-    init.service_reload()
+    init.service_reload(ap_settings['interface'])
 
     # Configure hostapd @ /etc/hostapd/hostapd.conf
     config.hostapd_conf(ap_settings)
