@@ -227,7 +227,7 @@ class BerryInstall:
                 f_new.write(line.replace(dnsmasq_conf_default_d['upstream'], upstr))
             # modify dhcp range and least time limit
             elif dnsmasq_conf_default_d['dhcp-string'] in line:
-                f_new.write(line.replace(dnsmasq_conf_default_d['dhcp-string'], settings_d["dhcp-string"]))
+                f_new.write(line.replace(dnsmasq_conf_default_d['dhcp-string'], settings_d['dhcp-string']))
             else:
                 f_new.write(line)
 
@@ -237,13 +237,7 @@ class BerryInstall:
 
 
     # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
-    def hostapd_conf(iface_in, ssid, chan):
-        # default values that will be in source config
-        default_vals = dict()
-        default_vals['iface'] = "wlan0"
-        default_vals['ssid'] = "APname"
-        default_vals['chan'] = "channel=6"
-
+    def hostapd_conf(settings_d=hostapd_conf_default_d):
         # open source config for reading and dst config for writing
         f_orig = open(sHostapdConf, 'r')
         f_new = open(dHostapdConf, 'w')
@@ -251,12 +245,14 @@ class BerryInstall:
         # iterate through each line searching for default values and replacing with
         # custom values
         for line in f_orig:
-            if default_vals['iface'] in line:
-                f_new.write(line.replace(default_vals['iface'], iface_in))
-            elif default_vals['ssid'] in line:
-                f_new.write(line.replace(default_vals['ssid'], ssid))
-            elif default_vals['chan'] in line:
-                f_new.write(line.replace(default_vals['chan'], chan))
+            if hostapd_conf_default_d['interface'] in line:
+                f_new.write(line.replace(hostapd_conf_default_d['iface'], iface_in))
+            elif hostapd_conf_default_d['ssid'] in line:
+                f_new.write(line.replace(hostapd_conf_default_d['ssid'], ssid))
+            elif hostapd_conf_default_d['chan'] in line:
+                f_new.write(line.replace(hostapd_conf_default_d['channel'], chan))
+            elif hostapd_conf_default_d['passphrase'] in line:
+                f_new.write(line.replace(hostapd_conf_default_d['passphrase'], settings_d['passphrase']))
             else:
                 f_new.write(line)
 
