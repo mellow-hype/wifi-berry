@@ -144,7 +144,7 @@ class BerryInit:
 # given values if present, otherwise uses the default settings laid out in the
 # dictionaries at the top of this file.
 # --------------------------------------------------------------------------- #
-class BerryInstall:
+class BerryConfig:
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
 
     # Static IP configuration @ /etc/network/interfaces
