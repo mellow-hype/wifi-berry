@@ -149,6 +149,8 @@ class BerryInstall:
 
     # Static IP configuration @ /etc/network/interfaces
     def ipconf(settings_d=ip_conf_default_d):
+        '''Modify /etc/network/interfaces with default settings if no\
+             settings dict passed.''' 
         # open provided config file for reading and the user's for writing
         sIfaceConf = 'config/iface.conf'
         dIfaceConf = '/etc/network/interfaces'
@@ -187,9 +189,8 @@ class BerryInstall:
     
     # Convert last bit of the input IP to format it as gateway, broadcast, etc
     def ip_converter(ip_addr, finbit):
-        '''"Change the last bit of an IP to format as gateway, broadcast, etc.
-        First arg is the IP, second arg is the desired value for the last bit
-        (the value after the last period.'''
+        '''"Change the last bit of an IP to format as gateway, broadcast, etc.\
+            (ip_addr = IP to modify, finbit = value for final field in IP)'''
 
         cust_ip = list(ip_addr)
         cust_ip[(len(ip_addr) - 1)] = finbit
@@ -199,6 +200,8 @@ class BerryInstall:
 
     # dnsmasq configuration @ /etc/dnsmasq.conf
     def dnsmasq_conf(settings_d=dnsmasq_conf_default_d):
+        '''Modify /etc/dnsmasq.conf with default settings if no settings dict \
+            passed.''' 
         # open source config for reading and dst config for writing
         dDnsmasqConf = '/etc/dnsmasq.conf'
         sDnsmasqConf = 'config/dnsmasq.conf'
@@ -228,6 +231,8 @@ class BerryInstall:
 
     # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
     def hostapd_conf(settings_d=hostapd_conf_default_d):
+        '''Modify /etc/hostapd.conf and /etc/default/hostapd with default settings if no \
+            settings dict passed.'''
         # open source config for reading and dst config for writing
         sHostapdConf = 'config/hostapd.conf'
         dHostapdConf = '/etc/hostapd/hostapd.conf'
@@ -322,9 +327,8 @@ def get_channel():
 
 # Find available network interfaces
 def available_iface():
-    '''Function to parse the output of /proc/net/dev for lines
-        containing wireless devices. Strips just the name of the
-        device and returns a list of the devices found.'''
+    '''Parse output of /proc/net/dev for lines containing wireless devices. Get the name of the
+        device and returns a list of names.'''
     iface_l = [0]
     for line in open('/proc/net/dev', 'r'):
         if 'wlan' in line:
@@ -336,6 +340,7 @@ def available_iface():
 
 # Prompt user for desired AP passphrase with verification
 def pass_prompt():
+    '''Prompt for the new WPA2 passphrase of the new access point.'''
     prompt = 'Desired passphrase for access point: '
     prompt2 = 'Repeat password for verification: '
     pass_1 = ''
