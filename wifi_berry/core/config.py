@@ -4,21 +4,6 @@
 
 import string
 
-# --------------------------------------------------------------------------- #
-# Default definitions for paths and other static values
-# --------------------------------------------------------------------------- #
-# DST CONFIG PATHS
-dHostapdConf = '/etc/hostapd/hostapd.conf'
-dDhcpcdConf = '/etc/dhcpcd.conf'
-dIfaceConf = '/etc/network/interfaces'
-dDnsmasqConf = '/etc/dnsmasq.conf'
-dRCLocal = '/etc/rc.local'
-
-# SRC CONFIG PATHS
-sHostapdConf = 'config/hostapd.conf'
-sIfaceConf = 'config/iface.conf'
-sDnsmasqConf = 'config/dnsmasq.conf'
-
 # OTHERS
 iface = 'wlan0'
 hostapdDefault = '/etc/default/hostapd'
@@ -81,6 +66,7 @@ class BerryInit:
 
     # Configure dhcpcd
     def mod_dhcpcd():
+        dDhcpcdConf = '/etc/dhcpcd.conf'
         keep_orig(dDhcpcdConf)
         # append 'denyinterfaces wlan0' to the end of file
         with open(dDhcpcdConf, "a") as dhcpcd_conf:
@@ -116,6 +102,7 @@ class BerryInit:
     def net_conf():
         # Import the subprocess.call() function.
         from subprocess import call
+        dRCLocal = '/etc/rc.local'
 
         # Configure NAT and port forwarding between interfaces.
         call([
@@ -165,6 +152,8 @@ class BerryInstall:
     # Static IP configuration @ /etc/network/interfaces
     def ipconf(settings_d=ip_conf_default_d):
         # open provided config file for reading and the user's for writing
+        sIfaceConf = 'config/iface.conf'
+        dIfaceConf = '/etc/network/interfaces'
         f_orig = open(sHostapdConf, 'r')
         f_new = open(dHostapdConf, 'w')
 
@@ -213,6 +202,8 @@ class BerryInstall:
     # dnsmasq configuration @ /etc/dnsmasq.conf
     def dnsmasq_conf(settings_d=dnsmasq_conf_default_d):
         # open source config for reading and dst config for writing
+        dDnsmasqConf = '/etc/dnsmasq.conf'
+        sDnsmasqConf = 'config/dnsmasq.conf'
         f_orig = open(sDnsmasqConf, 'r')
         f_new = open(dDnsmasqConf, 'w')
 
@@ -239,6 +230,8 @@ class BerryInstall:
     # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
     def hostapd_conf(settings_d=hostapd_conf_default_d):
         # open source config for reading and dst config for writing
+        sHostapdConf = 'config/hostapd.conf'
+        dHostapdConf = '/etc/hostapd/hostapd.conf'
         f_orig = open(sHostapdConf, 'r')
         f_new = open(dHostapdConf, 'w')
 
