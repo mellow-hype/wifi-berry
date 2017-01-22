@@ -148,7 +148,7 @@ class BerryConfig:
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
 
     # Static IP configuration @ /etc/network/interfaces
-    def ipconf(settings_d=ip_conf_default_d):
+    def ipconf(settings_d):
         '''Modify /etc/network/interfaces with default settings if no\
              settings dict passed.''' 
         # open provided config file for reading and the user's for writing
@@ -199,7 +199,7 @@ class BerryConfig:
 
 
     # dnsmasq configuration @ /etc/dnsmasq.conf
-    def dnsmasq_conf(settings_d=dnsmasq_conf_default_d):
+    def dnsmasq_conf(settings_d):
         '''Modify /etc/dnsmasq.conf with default settings if no settings dict \
             passed.''' 
         # open source config for reading and dst config for writing
@@ -230,7 +230,7 @@ class BerryConfig:
 
 
     # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
-    def hostapd_conf(settings_d=hostapd_conf_default_d):
+    def hostapd_conf(settings_d):
         '''Modify /etc/hostapd.conf and /etc/default/hostapd with default settings if no \
             settings dict passed.'''
         # open source config for reading and dst config for writing
