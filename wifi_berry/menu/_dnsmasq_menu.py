@@ -107,7 +107,7 @@ def menu_wizard_dnsmasq(presets_d):
     dnsmasq_conf_d = dnsmasq_conf_default_d
 
     # Set the interface value from presets_d
-    dnsmasq_conf_d["iface"] = presets_d["iface"]
+    dnsmasq_conf_d["interface"] = presets_d["interface"]
 
     # Define the variables that are needed for the configuration menu.
     main_dnsmasq_info_str = '[Configure DNS and DHCP settings]'
