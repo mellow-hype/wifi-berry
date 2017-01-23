@@ -1,10 +1,7 @@
 # --------------------------------------------------------------------------- #
-# This function contains the definitions for child menus and
-# other functionality for the CLI menu for the Raspberry Pi AP.
-# NOTE: ...
-# TODO: ...
+# This function contains the definitions for customization menus for Wizard 
+# mode.
 # --------------------------------------------------------------------------- #
-
 # Import the menu module.
 import menu3
 
@@ -14,8 +11,6 @@ import menu3
 # This section includes the configuration menu and the specific
 # configuration child menus, for editing specific configurations.
 # --------------------------------------------------------------------------- #
-
-
 def menu_wizard_ip():
     """This is the configuration menu for IP settings."""
 
@@ -56,6 +51,7 @@ def menu_wizard_ip():
 
         # Import the default IP settings dict so we can plug in values
         from ..core.config import ip_conf_default_d
+        from ..core.config import ip_converter
         ip_conf_d = ip_conf_default_d
 
         # Private IP/netmask validation
@@ -76,8 +72,13 @@ def menu_wizard_ip():
             else:
                 # Save values to our settings dict and pass it back to the parent
                 # function.
-                ip_conf_d['ip'] = my_menu_wizard_ip_return['Private IP']
+                ip_conf_d['ip'] = \
+                    ip_converter(my_menu_wizard_ip_return['Private IP'], '1')
                 ip_conf_d['netmask'] = my_menu_wizard_ip_return['Netmask']
+                ip_conf_d['network'] = \
+                    ip_converter(ip_conf_d['ip', '0'])
+                ip_conf_d['broadcast'] = \
+                    ip_converter(ip_conf_d['ip'], '255')
                 return ip_conf_d
         except NetmaskValueError:
             print("Please enter a valid netmask.", NetmaskValueError)
@@ -110,11 +111,6 @@ def menu_wizard_hostapd_interface():
     # Initialize an empty dictionary for storing
     # the HostAPD interface selections.
     menu_wizard_hostapd_interface_selections_d = {}
-
-    # ---------------------------------------------------------------------- #
-    def return_interface(iface_selection):
-        return iface_selection
-    # ---------------------------------------------------------------------- #
 
     for i in range(len(menu_wizard_hostapd_interface_choices_l)):
         menu_wizard_hostapd_interface_selections_d[str(i)] = \

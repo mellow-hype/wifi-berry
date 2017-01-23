@@ -1,7 +1,41 @@
+from .config import dnsmasq_conf_default_d
+from .config import hostapd_conf_default_d
+from .config import ip_conf_default_d
+from .config import BerryInit
+from .config import BerryConfig
 
-def automagic_install(default_settings_d):
-    # TODO: create automagic installation logic
-    pass
+
+def automagic_install(
+    ip_settings=ip_conf_default_d,
+    ap_settings=hostapd_conf_default_d,
+    dns_settings=dnsmasq_conf_default_d):
+    
+    # Create an instance of Init and Install classes
+    init = BerryInit()
+    config = BerryConfig()
+
+    # Install dependencies
+    init.dep_install()
+
+    # Modify dhcpcd.conf to ignore selected interface
+    init.mod_dhcpcd(ap_settings['interface'])
+
+    # Configure static IP settings @ /etc/network/interfaces
+    config.ipconf(ip_settings)
+
+    # Restart dhcpcd and reload config for interface
+    init.service_reload(ap_settings['interface'])
+
+    # Configure hostapd @ /etc/hostapd/hostapd.conf
+    config.hostapd_conf(ap_settings)
+
+    # Configure dnsmasq @ /etc/dnsmasq.conf
+    config.dnsmasq_conf(dns_settings)
+
+    # Enable IPv4 forwarding and configure NAT
+    init.ipv4_forward()
+    init.net_conf()
+    
 
 
 def wizard_install():
@@ -17,6 +51,7 @@ def wizard_install():
     
     # -- Get hostapd configuration settings
     ap_config_d = menu_wizard_hostapd()
+    
     # DEBUG: 
     print(ap_config_d)
 
@@ -28,3 +63,6 @@ def wizard_install():
         }
 
     dns_config_d = menu_wizard_dnsmasq(dns_custom_d)
+
+    # Pass settings to automagic_install for final install
+    automagic_install(ip_config_d, ap_config_d, dns_config_d)

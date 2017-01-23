@@ -4,27 +4,6 @@
 
 import string
 
-# --------------------------------------------------------------------------- #
-# Default definitions for paths and other static values
-# --------------------------------------------------------------------------- #
-# DST CONFIG PATHS
-dHostapdConf = '/etc/hostapd/hostapd.conf'
-dDhcpcdConf = '/etc/dhcpcd.conf'
-dIfaceConf = '/etc/network/interfaces'
-dDnsmasqConf = '/etc/dnsmasq.conf'
-dRCLocal = '/etc/rc.local'
-
-# SRC CONFIG PATHS
-sHostapdConf = 'config/hostapd.conf'
-sIfaceConf = 'config/iface.conf'
-sDnsmasqConf = 'config/dnsmasq.conf'
-
-# OTHERS
-iface = 'wlan0'
-hostapdDefault = '/etc/default/hostapd'
-daemonStr = '#DAEMON_CONF=""'
-daemonStrX = 'DAEMON_CONF="/etc/hostapd/hostapd.conf"'
-
 # DEFAULT CONFIGURATION VALUES
 ip_conf_default_d = {
     'ip': '172.24.1.1',
@@ -64,7 +43,8 @@ class BerryInit:
 
 
     # Install hostapd and dnsmasq
-    def dep_install(self):
+    def dep_install():
+        '''Install dnsmasq and hostapd + dependencies if not present'''
         from subprocess import check_output
         from subprocess import STDOUT
         from subprocess import CalledProcessError
@@ -80,9 +60,11 @@ class BerryInit:
 
 
     # Configure dhcpcd
-    def mod_dhcpcd():
+    def mod_dhcpcd(iface):
+        '''Modify dhcpcd.conf to ignore our interface'''
+        dDhcpcdConf = '/etc/dhcpcd.conf'
         keep_orig(dDhcpcdConf)
-        # append 'denyinterfaces wlan0' to the end of file
+        # append 'denyinterfaces [interface]' to the end of file
         with open(dDhcpcdConf, "a") as dhcpcd_conf:
             dhcpcd_conf.write("\ndenyinterfaces " + iface + "\n")
         dhcpcd_conf.close()
@@ -90,7 +72,8 @@ class BerryInit:
 
 
     # Reload dhcpcd and bring wlan0 down and then up to reload config
-    def service_reload():
+    def service_reload(iface):
+        '''Reload dhcpcd and reload config for interface'''
         from subprocess import call
         print("Restarting dhcpcd and reloading interface configuration...")
         call(["sudo", "service", "dhcpcd", "restart"])
@@ -101,6 +84,7 @@ class BerryInit:
 
     # enable IPv4 forwarding
     def ipv4_forward():
+        '''Enable IPv4 forwarding'''
         sysctl = '/etc/sysctl.conf'
         orig = '#net.ipv4.ip_forward=1'
         f_original = open((keep_orig(sysctl)), 'r')
@@ -114,8 +98,10 @@ class BerryInit:
 
     # iptables nat config
     def net_conf():
+        '''Configure NAT settings and make persistent'''
         # Import the subprocess.call() function.
         from subprocess import call
+        dRCLocal = '/etc/rc.local'
 
         # Configure NAT and port forwarding between interfaces.
         call([
@@ -159,12 +145,16 @@ class BerryInit:
 # given values if present, otherwise uses the default settings laid out in the
 # dictionaries at the top of this file.
 # --------------------------------------------------------------------------- #
-class BerryInstall:
+class BerryConfig:
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
 
     # Static IP configuration @ /etc/network/interfaces
-    def ipconf(settings_d=ip_conf_default_d):
+    def ipconf(settings_d):
+        '''Modify /etc/network/interfaces with default settings if no\
+             settings dict passed.''' 
         # open provided config file for reading and the user's for writing
+        sIfaceConf = 'configs/iface.conf'
+        dIfaceConf = '/etc/network/interfaces'
         f_orig = open(sHostapdConf, 'r')
         f_new = open(dHostapdConf, 'w')
 
@@ -197,28 +187,14 @@ class BerryInstall:
         f_orig.close()
         f_new.close()
 
-    
-    # Convert last bit of the input IP to format it as gateway, broadcast, etc
-    def ip_converter(ip_addr, finbit):
-        '''"Change the last bit of an IP to format as gateway, broadcast, etc.
-        First arg is the IP, second arg is the desired value for the last bit
-        (the value after the last period.'''
-
-        cust_ip = list(ip_addr)
-        cust_ip[(len(ip_addr) - 1)] = finbit
-        fin = ''
-        return fin.join(cust_ip)
-
 
     # dnsmasq configuration @ /etc/dnsmasq.conf
-    def dnsmasq_conf(iface_in, upstr, dhcp_set):
-        # default values that will be in the source config
-        default_vals = dict()
-        default_vals['iface'] = "wlan0"
-        default_vals['upstream'] = "8.8.8.8"
-        default_vals['dhcp_rng'] = "172.24.1.50,172.24.1.150,12h"
-
+    def dnsmasq_conf(settings_d):
+        '''Modify /etc/dnsmasq.conf with default settings if no settings dict \
+            passed.''' 
         # open source config for reading and dst config for writing
+        dDnsmasqConf = '/etc/dnsmasq.conf'
+        sDnsmasqConf = 'configs/dnsmasq.conf'
         f_orig = open(sDnsmasqConf, 'r')
         f_new = open(dDnsmasqConf, 'w')
 
@@ -226,14 +202,14 @@ class BerryInstall:
         # custom values
         for line in f_orig:
             # modify interface
-            if default_vals['iface'] in line:
-                f_new.write(line.replace(default_vals['iface'], iface_in))
+            if dnsmasq_conf_default_d['interface'] in line:
+                f_new.write(line.replace(dnsmasq_conf_default_d['interface'], iface_in))
             # modify upstream DNS server
-            elif default_vals['upstream'] in line:
-                f_new.write(line.replace(default_vals['upstream'], upstr))
+            elif dnsmasq_conf_default_d['upstream'] in line:
+                f_new.write(line.replace(dnsmasq_conf_default_d['upstream'], upstr))
             # modify dhcp range and least time limit
-            elif default_vals['dhcp_rng'] in line:
-                f_new.write(line.replace(default_vals['dhcp_rng'], dhcp_set))
+            elif dnsmasq_conf_default_d['dhcp-string'] in line:
+                f_new.write(line.replace(dnsmasq_conf_default_d['dhcp-string'], settings_d['dhcp-string']))
             else:
                 f_new.write(line)
 
@@ -242,33 +218,49 @@ class BerryInstall:
         f_orig.close()
 
 
-    # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
-    def hostapd_conf(iface_in, ssid, chan):
-        # default values that will be in source config
-        default_vals = dict()
-        default_vals['iface'] = "wlan0"
-        default_vals['ssid'] = "APname"
-        default_vals['chan'] = "channel=6"
 
+    # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
+    def hostapd_conf(settings_d):
+        '''Modify /etc/hostapd.conf and /etc/default/hostapd with default settings if no \
+            settings dict passed.'''
         # open source config for reading and dst config for writing
+        sHostapdConf = 'configs/hostapd.conf'
+        dHostapdConf = '/etc/hostapd/hostapd.conf'
         f_orig = open(sHostapdConf, 'r')
         f_new = open(dHostapdConf, 'w')
 
         # iterate through each line searching for default values and replacing with
         # custom values
         for line in f_orig:
-            if default_vals['iface'] in line:
-                f_new.write(line.replace(default_vals['iface'], iface_in))
-            elif default_vals['ssid'] in line:
-                f_new.write(line.replace(default_vals['ssid'], ssid))
-            elif default_vals['chan'] in line:
-                f_new.write(line.replace(default_vals['chan'], chan))
+            if hostapd_conf_default_d['interface'] in line:
+                f_new.write(line.replace(hostapd_conf_default_d['iface'], iface_in))
+            elif hostapd_conf_default_d['ssid'] in line:
+                f_new.write(line.replace(hostapd_conf_default_d['ssid'], ssid))
+            elif hostapd_conf_default_d['chan'] in line:
+                f_new.write(line.replace(hostapd_conf_default_d['channel'], chan))
+            elif hostapd_conf_default_d['passphrase'] in line:
+                f_new.write(line.replace(hostapd_conf_default_d['passphrase'], settings_d['passphrase']))
             else:
                 f_new.write(line)
 
         # close up
         f_orig.close()
         f_new.close()
+
+        # edit /etc/default/hostapd to point daemon to our config:
+        # we use keep_orig() to make a new copy of the existing config on the system and open it for reading and 
+        # open the old existing copy to replace the desired string
+        hostapdDefault = '/etc/default/hostapd'
+        daemonStr = '#DAEMON_CONF=""'
+        daemonStrX = 'DAEMON_CONF="/etc/hostapd/hostapd.conf"'
+        f_original = open(keep_orig(hostapdDefault), 'r')
+        f_new = open(hostapdDefault, 'w')
+        print("Editing /etc/default/hostapd...")
+        for line in f_original:
+            f_new.write(line.replace(daemonStr, daemonStrX))
+        f_original.close()
+        f_new.close()
+        print("Done editing /etc/default/hostapd.\n hostapd configuration complete.")
 
 # --------------------------------------------------------------------------- #
 # Wizard Mode Input utilities: auxiliary functions for gathering input
@@ -325,9 +317,8 @@ def get_channel():
 
 # Find available network interfaces
 def available_iface():
-    '''Function to parse the output of /proc/net/dev for lines
-        containing wireless devices. Strips just the name of the
-        device and returns a list of the devices found.'''
+    '''Parse output of /proc/net/dev for lines containing wireless devices. Get the name of the
+        device and returns a list of names'''
     iface_l = [0]
     for line in open('/proc/net/dev', 'r'):
         if 'wlan' in line:
@@ -336,3 +327,45 @@ def available_iface():
                 if char == ':':
                     iface_l[x] = line[:index]
     return iface_l
+
+# Prompt user for desired AP passphrase with verification
+def pass_prompt():
+    '''Prompt for the new WPA2 passphrase of the new access point.'''
+    prompt = 'Desired passphrase for access point: '
+    prompt2 = 'Repeat password for verification: '
+    pass_1 = ''
+    while len(pass_1) < 8:
+        from getpass import getpass
+        pass_1 = getpass(prompt)
+        # enforce min passphrase length
+        if len(pass_1) < 8:
+            print("[Error]: Passphrase must be at least 8 characters.")
+            continue
+        # enforce max passphrase length (wpa2 sets max at 63 chars)
+        elif len(pass_1) > 63:
+            print("[Error]: Passphrase must be less than 64 characters.")
+            continue
+        # enforce passphrase contain only printable characters
+        elif all(c in string.printable for c in pass_1) is False:
+            print("[Error]: Passphrase can only contain printable characters.")
+            continue
+        else:
+            # ask for passphrase again for verification
+            pass_2 = getpass(prompt2)
+            if pass_2 == pass_1:
+                return pass_2
+            else:
+                print("[Error]: Passphrases do not match. Please try again.")
+                pass_1 = ''
+                continue
+
+# Convert last bit of the input IP to format it as gateway, broadcast, etc
+def ip_converter(ip_addr, finbit):
+    '''"Change the last bit of an IP to format as gateway, broadcast, etc.\
+        (ip_addr = IP to modify, finbit = value for final field in IP)'''
+
+    cust_ip = list(ip_addr)
+    cust_ip[(len(ip_addr) - 1)] = finbit
+    fin = ''
+    return fin.join(cust_ip)
+    
