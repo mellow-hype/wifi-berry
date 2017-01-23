@@ -182,17 +182,6 @@ class BerryConfig:
         f_orig.close()
         f_new.close()
 
-    
-    # Convert last bit of the input IP to format it as gateway, broadcast, etc
-    def ip_converter(ip_addr, finbit):
-        '''"Change the last bit of an IP to format as gateway, broadcast, etc.\
-            (ip_addr = IP to modify, finbit = value for final field in IP)'''
-
-        cust_ip = list(ip_addr)
-        cust_ip[(len(ip_addr) - 1)] = finbit
-        fin = ''
-        return fin.join(cust_ip)
-
 
     # dnsmasq configuration @ /etc/dnsmasq.conf
     def dnsmasq_conf(settings_d):
@@ -364,3 +353,14 @@ def pass_prompt():
                 print("[Error]: Passphrases do not match. Please try again.")
                 pass_1 = ''
                 continue
+
+# Convert last bit of the input IP to format it as gateway, broadcast, etc
+def ip_converter(ip_addr, finbit):
+    '''"Change the last bit of an IP to format as gateway, broadcast, etc.\
+        (ip_addr = IP to modify, finbit = value for final field in IP)'''
+
+    cust_ip = list(ip_addr)
+    cust_ip[(len(ip_addr) - 1)] = finbit
+    fin = ''
+    return fin.join(cust_ip)
+    
