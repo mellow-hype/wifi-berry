@@ -51,7 +51,7 @@ class BerryInit:
         try:
             print("Installing dnsmasq and hostapd...")
             check_output(
-                ["sudo", "apt-get", "install", "dnsmasq", "hostapd"], stderr=STDOUT
+                ["sudo", "apt-get", "install", "-y", "dnsmasq", "hostapd"], stderr=STDOUT
                 )
         except CalledProcessError as e:
             print("Error: installation failed.\n", e.output)
