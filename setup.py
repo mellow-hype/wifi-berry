@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='wifi_berry',
     version='0.1',
@@ -6,7 +6,7 @@ setup(name='wifi_berry',
     url='https://github.com/mellow-hype/wifi-berry',
     author='Enrique Castillo',
     license='GPL',
-    packages=['wifi_berry'],
+    packages=find_packages(),
     install_requires=[
         'menu3',
         'ipaddress'
