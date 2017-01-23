@@ -51,6 +51,7 @@ def wizard_install():
     
     # -- Get hostapd configuration settings
     ap_config_d = menu_wizard_hostapd()
+    
     # DEBUG: 
     print(ap_config_d)
 
