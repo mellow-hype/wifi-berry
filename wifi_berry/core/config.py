@@ -18,7 +18,6 @@ default_settings_d = {
     'dhcp-string': '172.24.1.50,172.24.1.150,12h'
 }
 
-
 # --------------------------------------------------------------------------- #
 # Initialization Class: these functions are used by both Automagic and Wizard 
 # mode for initialization tasks.
@@ -138,12 +137,14 @@ class BerryInit:
 # given values if present, otherwise uses the default settings laid out in the
 # dictionaries at the top of this file.
 # --------------------------------------------------------------------------- #
+
 class BerryConfig:
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
     def __init__(self):
         from pickle import load
         with open('configs/defaults.pickle', 'rb') as d:
-            self.settings = load(d)
+            self.settings = {}
+            self.settings.update(load(d))
     
     def write_settings():
         pass
@@ -262,9 +263,12 @@ class BerryConfig:
         f_new.close()
         print("Done editing /etc/default/hostapd.\n hostapd configuration complete.")
 
+
 # --------------------------------------------------------------------------- #
 # Wizard Mode Input utilities: auxiliary functions for gathering input
 # --------------------------------------------------------------------------- #
+
+
 # Get desired SSID
 def get_ssid():
     ''' Prompt the user for the desired SSID and do length checking.
