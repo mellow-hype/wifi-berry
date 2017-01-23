@@ -60,7 +60,7 @@ class BerryInit:
 
 
     # Configure dhcpcd
-    def mod_dhcpcd(iface):
+    def mod_dhcpcd(self, iface):
         '''Modify dhcpcd.conf to ignore our interface'''
         dDhcpcdConf = '/etc/dhcpcd.conf'
         keep_orig(dDhcpcdConf)
@@ -72,7 +72,7 @@ class BerryInit:
 
 
     # Reload dhcpcd and bring wlan0 down and then up to reload config
-    def service_reload(iface):
+    def service_reload(self, iface):
         '''Reload dhcpcd and reload config for interface'''
         from subprocess import call
         print("Restarting dhcpcd and reloading interface configuration...")
@@ -83,7 +83,7 @@ class BerryInit:
 
 
     # enable IPv4 forwarding
-    def ipv4_forward():
+    def ipv4_forward(self):
         '''Enable IPv4 forwarding'''
         sysctl = '/etc/sysctl.conf'
         orig = '#net.ipv4.ip_forward=1'
@@ -97,7 +97,7 @@ class BerryInit:
 
 
     # iptables nat config
-    def net_conf():
+    def net_conf(self):
         '''Configure NAT settings and make persistent'''
         # Import the subprocess.call() function.
         from subprocess import call
@@ -149,7 +149,7 @@ class BerryConfig:
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
 
     # Static IP configuration @ /etc/network/interfaces
-    def ipconf(settings_d):
+    def ipconf(self, settings_d):
         '''Modify /etc/network/interfaces with default settings if no\
              settings dict passed.''' 
         # open provided config file for reading and the user's for writing
@@ -189,7 +189,7 @@ class BerryConfig:
 
 
     # dnsmasq configuration @ /etc/dnsmasq.conf
-    def dnsmasq_conf(settings_d):
+    def dnsmasq_conf(self, settings_d):
         '''Modify /etc/dnsmasq.conf with default settings if no settings dict \
             passed.''' 
         # open source config for reading and dst config for writing
@@ -220,7 +220,7 @@ class BerryConfig:
 
 
     # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
-    def hostapd_conf(settings_d):
+    def hostapd_conf(self, settings_d):
         '''Modify /etc/hostapd.conf and /etc/default/hostapd with default settings if no \
             settings dict passed.'''
         # open source config for reading and dst config for writing
