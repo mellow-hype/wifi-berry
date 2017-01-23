@@ -44,6 +44,7 @@ class BerryInit:
 
     # Install hostapd and dnsmasq
     def dep_install():
+        '''Install dnsmasq and hostapd + dependencies if not present'''
         from subprocess import check_output
         from subprocess import STDOUT
         from subprocess import CalledProcessError
@@ -60,9 +61,10 @@ class BerryInit:
 
     # Configure dhcpcd
     def mod_dhcpcd(iface):
+        '''Modify dhcpcd.conf to ignore our interface'''
         dDhcpcdConf = '/etc/dhcpcd.conf'
         keep_orig(dDhcpcdConf)
-        # append 'denyinterfaces wlan0' to the end of file
+        # append 'denyinterfaces [interface]' to the end of file
         with open(dDhcpcdConf, "a") as dhcpcd_conf:
             dhcpcd_conf.write("\ndenyinterfaces " + iface + "\n")
         dhcpcd_conf.close()
@@ -71,6 +73,7 @@ class BerryInit:
 
     # Reload dhcpcd and bring wlan0 down and then up to reload config
     def service_reload(iface):
+        '''Reload dhcpcd and reload config for interface'''
         from subprocess import call
         print("Restarting dhcpcd and reloading interface configuration...")
         call(["sudo", "service", "dhcpcd", "restart"])
@@ -81,6 +84,7 @@ class BerryInit:
 
     # enable IPv4 forwarding
     def ipv4_forward():
+        '''Enable IPv4 forwarding'''
         sysctl = '/etc/sysctl.conf'
         orig = '#net.ipv4.ip_forward=1'
         f_original = open((keep_orig(sysctl)), 'r')
@@ -94,6 +98,7 @@ class BerryInit:
 
     # iptables nat config
     def net_conf():
+        '''Configure NAT settings and make persistent'''
         # Import the subprocess.call() function.
         from subprocess import call
         dRCLocal = '/etc/rc.local'
@@ -313,7 +318,7 @@ def get_channel():
 # Find available network interfaces
 def available_iface():
     '''Parse output of /proc/net/dev for lines containing wireless devices. Get the name of the
-        device and returns a list of names.'''
+        device and returns a list of names'''
     iface_l = [0]
     for line in open('/proc/net/dev', 'r'):
         if 'wlan' in line:
