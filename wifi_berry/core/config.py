@@ -148,7 +148,7 @@ class BerryConfig:
         '''Modify /etc/network/interfaces with default settings if no\
              settings dict passed.''' 
         # open provided config file for reading and the user's for writing
-        sIfaceConf = 'config/iface.conf'
+        sIfaceConf = 'configs/iface.conf'
         dIfaceConf = '/etc/network/interfaces'
         f_orig = open(sHostapdConf, 'r')
         f_new = open(dHostapdConf, 'w')
@@ -189,7 +189,7 @@ class BerryConfig:
             passed.''' 
         # open source config for reading and dst config for writing
         dDnsmasqConf = '/etc/dnsmasq.conf'
-        sDnsmasqConf = 'config/dnsmasq.conf'
+        sDnsmasqConf = 'configs/dnsmasq.conf'
         f_orig = open(sDnsmasqConf, 'r')
         f_new = open(dDnsmasqConf, 'w')
 
@@ -219,7 +219,7 @@ class BerryConfig:
         '''Modify /etc/hostapd.conf and /etc/default/hostapd with default settings if no \
             settings dict passed.'''
         # open source config for reading and dst config for writing
-        sHostapdConf = 'config/hostapd.conf'
+        sHostapdConf = 'configs/hostapd.conf'
         dHostapdConf = '/etc/hostapd/hostapd.conf'
         f_orig = open(sHostapdConf, 'r')
         f_new = open(dHostapdConf, 'w')
