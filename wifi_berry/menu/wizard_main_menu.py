@@ -331,7 +331,7 @@ def final_menu(ip_settings, ap_settings, dns_settings):
         if final_menu_return == 1:
             try:
                 print('You confirmed installation')
-                # automagic_install(ip_settings, ap_settings, dns_settings)
+                automagic_install(ip_settings, ap_settings, dns_settings)
             except:
                 print('Installation finished with errors.')
             else:
