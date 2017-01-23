@@ -34,7 +34,7 @@ dnsmasq_conf_default_d = {
 class BerryInit:
 
     # Save original configs for uninstall
-    def keep_orig(file_path):
+    def keep_orig(self, file_path):
         from subprocess import call
         new_name = file_path + '.orig'
         call(["mv", file_path, new_name])
