@@ -1,10 +1,7 @@
 # --------------------------------------------------------------------------- #
-# This function contains the definitions for child menus and
-# other functionality for the CLI menu for the Raspberry Pi AP.
-# NOTE: ...
-# TODO: ...
+# This function contains the definitions for customization menus for Wizard 
+# mode.
 # --------------------------------------------------------------------------- #
-
 # Import the menu module.
 import menu3
 
@@ -14,8 +11,6 @@ import menu3
 # This section includes the configuration menu and the specific
 # configuration child menus, for editing specific configurations.
 # --------------------------------------------------------------------------- #
-
-
 def menu_wizard_ip():
     """This is the configuration menu for IP settings."""
 
