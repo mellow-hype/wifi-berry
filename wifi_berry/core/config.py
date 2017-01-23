@@ -140,6 +140,13 @@ class BerryInit:
 # --------------------------------------------------------------------------- #
 class BerryConfig:
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
+    def __init__(self):
+        from pickle import load
+        with open('configs/defaults.pickle', 'rb') as d:
+            self.settings = load(d)
+    
+    def write_settings():
+        pass
 
     # Static IP configuration @ /etc/network/interfaces
     def ipconf(self, settings_d):
