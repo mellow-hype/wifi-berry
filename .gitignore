@@ -1,3 +1,6 @@
 __pycache__/
 *.py[cod]
 .vscode/
+/dist/
+/*.egg-info
+/*.egg
