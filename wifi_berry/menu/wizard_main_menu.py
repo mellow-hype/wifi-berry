@@ -77,8 +77,13 @@ def menu_wizard_ip():
             else:
                 # Save values to our settings dict and pass it back to the parent
                 # function.
-                ip_conf_d['ip'] = my_menu_wizard_ip_return['Private IP']
+                ip_conf_d['ip'] = \
+                    ip_converter(my_menu_wizard_ip_return['Private IP'], '1')
                 ip_conf_d['netmask'] = my_menu_wizard_ip_return['Netmask']
+                ip_conf_d['network'] = \
+                    ip_converter(ip_conf_d['ip', '0'])
+                ip_conf_d['broadcast'] = \
+                    ip_converter(ip_conf_d['ip'], '255')
                 return ip_conf_d
         except NetmaskValueError:
             print("Please enter a valid netmask.", NetmaskValueError)
