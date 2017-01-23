@@ -56,6 +56,7 @@ def menu_wizard_ip():
 
         # Import the default IP settings dict so we can plug in values
         from ..core.config import ip_conf_default_d
+        from ..core.config import ip_converter
         ip_conf_d = ip_conf_default_d
 
         # Private IP/netmask validation
