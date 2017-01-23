@@ -59,7 +59,7 @@ def wizard_install():
     # Pass previously set values to dnsmasq menu function 
     dns_custom_d = {
         "network": ip_config_d["network"],
-        "iface": ap_config_d["interface"]
+        "interface": ap_config_d["interface"]
         }
 
     dns_config_d = menu_wizard_dnsmasq(dns_custom_d)
