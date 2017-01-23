@@ -63,3 +63,6 @@ def wizard_install():
         }
 
     dns_config_d = menu_wizard_dnsmasq(dns_custom_d)
+
+    # Pass settings to automagic_install for final install
+    automagic_install(ip_config_d, ap_config_d, dns_config_d)
