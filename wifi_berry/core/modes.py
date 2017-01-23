@@ -1,14 +1,9 @@
-from .config import dnsmasq_conf_default_d
-from .config import hostapd_conf_default_d
-from .config import ip_conf_default_d
+from .config import default_settings_d
 from .config import BerryInit
 from .config import BerryConfig
 
 
-def automagic_install(
-    ip_settings=ip_conf_default_d,
-    ap_settings=hostapd_conf_default_d,
-    dns_settings=dnsmasq_conf_default_d):
+def automagic_install(settings_d=default_settings_d):
     
     # Create an instance of Init and Install classes
     init = BerryInit()
@@ -18,19 +13,19 @@ def automagic_install(
     init.dep_install()
 
     # Modify dhcpcd.conf to ignore selected interface
-    init.mod_dhcpcd(ap_settings['interface'])
+    init.mod_dhcpcd(settings_d['interface'])
 
     # Configure static IP settings @ /etc/network/interfaces
-    config.ipconf(ip_settings)
+    config.ipconf(settings_d)
 
     # Restart dhcpcd and reload config for interface
-    init.service_reload(ap_settings['interface'])
+    init.service_reload(settings_d['interface'])
 
     # Configure hostapd @ /etc/hostapd/hostapd.conf
-    config.hostapd_conf(ap_settings)
+    config.hostapd_conf(settings_d)
 
     # Configure dnsmasq @ /etc/dnsmasq.conf
-    config.dnsmasq_conf(dns_settings)
+    config.dnsmasq_conf(settings_d)
 
     # Enable IPv4 forwarding and configure NAT
     init.ipv4_forward()

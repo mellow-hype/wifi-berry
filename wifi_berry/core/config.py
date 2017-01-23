@@ -155,22 +155,22 @@ class BerryConfig:
         # with custom values
         for line in f_orig:
             # modify address value
-            if ip_conf_default_d['address'] in line:
+            if default_settings_d['ip'] in line:
                 f_new.write(line.replace(
-                    ip_conf_default_d['address'], settings_d['address']))
+                    default_settings_d['ip'], settings_d['ip']))
             # modify netmask value
-            elif ip_conf_default_d['netmask'] in line:
+            elif default_settings_d['netmask'] in line:
                 f_new.write(line.replace(
-                    ip_conf_default_d['netmask'], settings_d['netmask']))
+                    default_settings_d['netmask'], settings_d['netmask']))
             # modify network address value
-            elif ip_conf_default_d['network'] in line:
+            elif default_settings_d['network'] in line:
                 f_new.write(line.replace(
-                    ip_conf_default_d['network'], ip_converter(
+                    default_settings_d['network'], ip_converter(
                                     settings_d['network'], '0')))
             # modify broadcast value
-            elif ip_conf_default_d['broadcast'] in line:
+            elif default_settings_d['broadcast'] in line:
                 f_new.write(line.replace(
-                    ip_conf_default_d['broadcast'], ip_converter(
+                    default_settings_d['broadcast'], ip_converter(
                                     settings_d['broadcast'], '255')))
             # if nothing to modify, write the line
             else:
@@ -195,14 +195,14 @@ class BerryConfig:
         # custom values
         for line in f_orig:
             # modify interface
-            if dnsmasq_conf_default_d['interface'] in line:
-                f_new.write(line.replace(dnsmasq_conf_default_d['interface'], iface_in))
+            if default_settings_d['interface'] in line:
+                f_new.write(line.replace(default_settings_d['interface'], settings_d['interface']))
             # modify upstream DNS server
-            elif dnsmasq_conf_default_d['upstream'] in line:
-                f_new.write(line.replace(dnsmasq_conf_default_d['upstream'], upstr))
+            elif default_settings_d['upstream'] in line:
+                f_new.write(line.replace(default_settings_d['upstream'], settings_d['upstream']))
             # modify dhcp range and least time limit
-            elif dnsmasq_conf_default_d['dhcp-string'] in line:
-                f_new.write(line.replace(dnsmasq_conf_default_d['dhcp-string'], settings_d['dhcp-string']))
+            elif default_settings_d['dhcp-string'] in line:
+                f_new.write(line.replace(default_settings_d['dhcp-string'], settings_d['dhcp-string']))
             else:
                 f_new.write(line)
 
