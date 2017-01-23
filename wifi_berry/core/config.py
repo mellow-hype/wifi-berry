@@ -155,8 +155,8 @@ class BerryConfig:
         # open provided config file for reading and the user's for writing
         sIfaceConf = 'configs/iface.conf'
         dIfaceConf = '/etc/network/interfaces'
-        f_orig = open(sHostapdConf, 'r')
-        f_new = open(dHostapdConf, 'w')
+        f_orig = open(sIfaceConf, 'r')
+        f_new = open(dIfaceConf, 'w')
 
         # iterate through each line searching for default values and replacing
         # with custom values
