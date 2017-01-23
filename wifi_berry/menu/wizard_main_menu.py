@@ -112,11 +112,6 @@ def menu_wizard_hostapd_interface():
     # the HostAPD interface selections.
     menu_wizard_hostapd_interface_selections_d = {}
 
-    # ---------------------------------------------------------------------- #
-    def return_interface(iface_selection):
-        return iface_selection
-    # ---------------------------------------------------------------------- #
-
     for i in range(len(menu_wizard_hostapd_interface_choices_l)):
         menu_wizard_hostapd_interface_selections_d[str(i)] = \
             menu_wizard_hostapd_interface_choices_l[i]
