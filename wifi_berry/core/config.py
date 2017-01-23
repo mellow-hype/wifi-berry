@@ -43,7 +43,7 @@ class BerryInit:
 
 
     # Install hostapd and dnsmasq
-    def dep_install():
+    def dep_install(self):
         '''Install dnsmasq and hostapd + dependencies if not present'''
         from subprocess import check_output
         from subprocess import STDOUT
