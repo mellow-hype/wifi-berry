@@ -63,7 +63,7 @@ class BerryInit:
     def mod_dhcpcd(self, iface):
         '''Modify dhcpcd.conf to ignore our interface'''
         dDhcpcdConf = '/etc/dhcpcd.conf'
-        keep_orig(dDhcpcdConf)
+        self.keep_orig(dDhcpcdConf)
         # append 'denyinterfaces [interface]' to the end of file
         with open(dDhcpcdConf, "a") as dhcpcd_conf:
             dhcpcd_conf.write("\ndenyinterfaces " + iface + "\n")
@@ -145,7 +145,7 @@ class BerryInit:
 # given values if present, otherwise uses the default settings laid out in the
 # dictionaries at the top of this file.
 # --------------------------------------------------------------------------- #
-class BerryConfig:
+class BerryConfig(BerryInit.keep_orig):
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
 
     # Static IP configuration @ /etc/network/interfaces
