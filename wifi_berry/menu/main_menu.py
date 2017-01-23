@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # --------------------------------------------------------------------------- #
 # This is the main file for the CLI interface.
 # NOTE: If this script is invoked directly, the main menu will be presented.
@@ -9,7 +10,7 @@
 import menu3
 
 # Import core/install_modes module
-from wifi_berry.core.modes import automagic_install, wizard_install
+from ..core.modes import automagic_install, wizard_install
 
 def _menu_main_pre():
     """This functions contains any system/etc. actions we might need to """
