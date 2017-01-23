@@ -7,9 +7,9 @@ This script will automate the process of configuring a Raspberry Pi 3 to serve a
 Testing. Almost complete, just fixing bugs that hadn't been tested. Code clean-up next.
 
 ## TODO
-+ ~~Automagic install mode prompts and logic
-+ dnsmasq configuring menu (started)
-+ Wizard install mode functions~~
++ ~~Automagic install mode prompts and logic~~
++ ~~dnsmasq configuring menu (started)~~
++ ~~Wizard install mode functions~~
 + Testing
 + Bug fixes
 
