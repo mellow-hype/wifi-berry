@@ -25,13 +25,13 @@ def menu_main():
 
     # Define the variables that are needed for the menu object.
     menu_main_info_str = '[Main Menu]'
-    menu_main_title_str = '[APi Setup: Main Menu] (Q to quit.)'
+    menu_main_title_str = '[WifiBerry Setup: Main Menu] (Q to quit.)'
     menu_main_choices_l = [
         'Automagic Install',
         'Wizard Install',
         'Help'
     ]
-    menu_main_prompt_str = '[Prompt]: '
+    menu_main_prompt_str = '[Selection]: '
 
     # Instantiate and configure the menu object.
     menu_main = menu3.Menu(True)
@@ -52,7 +52,7 @@ def menu_main():
         menu_main_selections_d = {
             'Automagic Install': automagic_install,
             'Wizard Install': wizard_install,
-            'Help': '',
+            'Exit': quit,
         }
 
         # Access the dictionary by finding the menu choice that was selected.
