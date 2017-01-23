@@ -5,22 +5,15 @@
 import string
 
 # DEFAULT CONFIGURATION VALUES
-ip_conf_default_d = {
+default_settings_d = {
     'ip': '172.24.1.1',
     'netmask': '255.255.255.0',
     'network': '172.24.1.0',
-    'broadcast': '172.24.1.255'
-}
-
-hostapd_conf_default_d = {
+    'broadcast': '172.24.1.255',
     'interface': 'wlan0',
     'ssid': 'APname',
     'channel': 'channel=6',
-    'passphrase': 'raspberry1'
-}
-
-dnsmasq_conf_default_d = {
-    'interface': 'wlan0',
+    'passphrase': 'raspberry1',
     'upstream': '8.8.8.8',
     'dhcp-string': '172.24.1.50,172.24.1.150,12h'
 }
