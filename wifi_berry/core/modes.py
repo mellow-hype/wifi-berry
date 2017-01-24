@@ -39,8 +39,13 @@ def wizard_install():
     from ..menu.wizard_main_menu import menu_wizard_hostapd
     from ..menu._dnsmasq_menu import menu_wizard_dnsmasq
 
+
+    # Create instances of Berry Init and BerryConfig
+    init = BerryInit()
+    config = BerryConfig()
+
     # -- Get IP configuration settings
-    ip_config_d = menu_wizard_ip()
+    config.settings = menu_wizard_ip(**config.settings)
     # DEBUG: 
     print(ip_config_d)
     

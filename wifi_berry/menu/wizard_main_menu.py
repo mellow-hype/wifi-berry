@@ -11,7 +11,7 @@ import menu3
 # This section includes the configuration menu and the specific
 # configuration child menus, for editing specific configurations.
 # --------------------------------------------------------------------------- #
-def menu_wizard_ip():
+def menu_wizard_ip(settings_d):
     """This is the configuration menu for IP settings."""
 
     # Define the variables that are needed for the menu
@@ -49,10 +49,8 @@ def menu_wizard_ip():
         from ipaddress import IPv4Address, IPv4Network
         from ipaddress import NetmaskValueError, AddressValueError
 
-        # Import the default IP settings dict so we can plug in values
-        from ..core.config import ip_conf_default_d
+        # Import the IP converter function to transform IPs to different formats
         from ..core.config import ip_converter
-        ip_conf_d = ip_conf_default_d
 
         # Private IP/netmask validation
         try:
@@ -72,14 +70,14 @@ def menu_wizard_ip():
             else:
                 # Save values to our settings dict and pass it back to the parent
                 # function.
-                ip_conf_d['ip'] = \
+                settings_d['ip'] = \
                     ip_converter(my_menu_wizard_ip_return['Private IP'], '1')
-                ip_conf_d['netmask'] = my_menu_wizard_ip_return['Netmask']
-                ip_conf_d['network'] = \
-                    ip_converter(ip_conf_d['ip', '0'])
-                ip_conf_d['broadcast'] = \
-                    ip_converter(ip_conf_d['ip'], '255')
-                return ip_conf_d
+                settings_d['netmask'] = my_menu_wizard_ip_return['Netmask']
+                settings_d['network'] = \
+                    ip_converter(settings_d['ip', '0'])
+                settings_d['broadcast'] = \
+                    ip_converter(settings_d['ip'], '255')
+                return settings_d
         except NetmaskValueError:
             print("Please enter a valid netmask.", NetmaskValueError)
         except AddressValueError:
@@ -129,7 +127,7 @@ def menu_wizard_hostapd_interface():
             menu_wizard_hostapd_interface_return-1)]
 
 
-def menu_wizard_hostapd():
+def menu_wizard_hostapd(settings_d):
     '''This is the configuration menu for hostapd settings.'''
 
     # Declare an info string for the menu.
@@ -139,12 +137,6 @@ def menu_wizard_hostapd():
     # Declare title and prompt strings for the menu.
     menu_wizard_hostapd_title_str = '[Access Point Configuration]'
     menu_wizard_hostapd_prompt_str = '[hostapd config]: '
-
-    # Import the default configuration dictionary from the core module.
-    from ..core.config import hostapd_conf_default_d
-    hostapd_settings_d = hostapd_conf_default_d
-
-    # TODO: the Interface option will present a menu with available interfaces
 
     # Declare a list of HostAPD menu choices.
     menu_wizard_hostapd_choices_l = [
@@ -159,10 +151,8 @@ def menu_wizard_hostapd():
     menu_wizard_hostapd_menu = menu3.Menu(ALLOW_QUIT=True)
     menu_wizard_hostapd_menu.info(menu_wizard_hostapd_info_str)
 
-    # Import the get_ssid() and pass_prompt() functions
-    from ..core.config import get_ssid
-    from ..core.config import pass_prompt
-    from ..core.config import get_channel
+    # Import the get_ssid(), pass_prompt(), and get_channel() functions
+    from ..core.config import get_ssid, pass_prompt, get_channel
 
     # Present the menu to the user.
     while True:
@@ -191,7 +181,7 @@ def menu_wizard_hostapd():
         # Interface selection
         if menu_wizard_hostapd_choices_l[int(
                 menu_wizard_hostapd_return)-1] == 'Interface':
-            hostapd_settings_d['interface'] = \
+            settings_d['interface'] = \
                 menu_wizard_hostapd_selections_d[
                     menu_wizard_hostapd_choices_l[int(
                         menu_wizard_hostapd_return)-1]]()
@@ -201,7 +191,7 @@ def menu_wizard_hostapd():
                 int(menu_wizard_hostapd_return)-1] == 'SSID':
             # Assign the value that get_ssid()
             # returns to the settings dictionary.
-            hostapd_settings_d['ssid'] = menu_wizard_hostapd_selections_d[
+            settings_d['ssid'] = menu_wizard_hostapd_selections_d[
                 menu_wizard_hostapd_choices_l[int(
                     menu_wizard_hostapd_return)-1]]()
 
@@ -209,7 +199,7 @@ def menu_wizard_hostapd():
         elif menu_wizard_hostapd_choices_l[int(
                 menu_wizard_hostapd_return)-1] == 'Channel':
             # Assign the get_channel() value to the settings dictionary.
-            hostapd_settings_d['channel'] = menu_wizard_hostapd_selections_d[
+            settings_d['channel'] = menu_wizard_hostapd_selections_d[
                 menu_wizard_hostapd_choices_l[int(
                     menu_wizard_hostapd_return)-1]]()
 
@@ -217,7 +207,7 @@ def menu_wizard_hostapd():
         elif menu_wizard_hostapd_choices_l[int(
                 menu_wizard_hostapd_return)-1] == 'Passphrase':
             # Assign the get_pass() value to the settings dictionary.
-            hostapd_settings_d['passphrase'] = \
+            settings_d['passphrase'] = \
                 menu_wizard_hostapd_selections_d[
                     menu_wizard_hostapd_choices_l[int(
                         menu_wizard_hostapd_return)-1]]()
@@ -226,7 +216,7 @@ def menu_wizard_hostapd():
         # back to the calling function in wizard_install.
         elif (menu_wizard_hostapd_choices_l[
                 int(menu_wizard_hostapd_return) - 1] == 'Done'):
-            return hostapd_settings_d
+            return settings_d
 
         # XXX DEBUG: Print the return value and the config dictionary.
         print(menu_wizard_hostapd_return)
