@@ -150,7 +150,7 @@ class BerryConfig:
         pass
 
     # Static IP configuration @ /etc/network/interfaces
-    def ipconf(self, settings_d):
+    def ipconf(self):
         '''Modify /etc/network/interfaces with default settings if no\
              settings dict passed.''' 
         # open provided config file for reading and the user's for writing
@@ -165,21 +165,21 @@ class BerryConfig:
             # modify address value
             if default_settings_d['ip'] in line:
                 f_new.write(line.replace(
-                    default_settings_d['ip'], settings_d['ip']))
+                    default_settings_d['ip'], self.settings['ip']))
             # modify netmask value
             elif default_settings_d['netmask'] in line:
                 f_new.write(line.replace(
-                    default_settings_d['netmask'], settings_d['netmask']))
+                    default_settings_d['netmask'], self.settings['netmask']))
             # modify network address value
             elif default_settings_d['network'] in line:
                 f_new.write(line.replace(
                     default_settings_d['network'], ip_converter(
-                                    settings_d['network'], '0')))
+                                    self.settings['network'], '0')))
             # modify broadcast value
             elif default_settings_d['broadcast'] in line:
                 f_new.write(line.replace(
                     default_settings_d['broadcast'], ip_converter(
-                                    settings_d['broadcast'], '255')))
+                                    self.settings['broadcast'], '255')))
             # if nothing to modify, write the line
             else:
                 f_new.write(line)
@@ -190,7 +190,7 @@ class BerryConfig:
 
 
     # dnsmasq configuration @ /etc/dnsmasq.conf
-    def dnsmasq_conf(self, settings_d):
+    def dnsmasq_conf(self):
         '''Modify /etc/dnsmasq.conf with default settings if no settings dict \
             passed.''' 
         # open source config for reading and dst config for writing
@@ -204,13 +204,13 @@ class BerryConfig:
         for line in f_orig:
             # modify interface
             if default_settings_d['interface'] in line:
-                f_new.write(line.replace(default_settings_d['interface'], settings_d['interface']))
+                f_new.write(line.replace(default_settings_d['interface'], self.settings['interface']))
             # modify upstream DNS server
             elif default_settings_d['upstream'] in line:
-                f_new.write(line.replace(default_settings_d['upstream'], settings_d['upstream']))
+                f_new.write(line.replace(default_settings_d['upstream'], self.settings['upstream']))
             # modify dhcp range and least time limit
             elif default_settings_d['dhcp-string'] in line:
-                f_new.write(line.replace(default_settings_d['dhcp-string'], settings_d['dhcp-string']))
+                f_new.write(line.replace(default_settings_d['dhcp-string'], self.settings['dhcp-string']))
             else:
                 f_new.write(line)
 
@@ -234,13 +234,13 @@ class BerryConfig:
         # custom values
         for line in f_orig:
             if hostapd_conf_default_d['interface'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['iface'], iface_in))
+                f_new.write(line.replace(hostapd_conf_default_d['interface'], self.settings['interface']))
             elif hostapd_conf_default_d['ssid'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['ssid'], ssid))
+                f_new.write(line.replace(hostapd_conf_default_d['ssid'], self.settings['ssid']))
             elif hostapd_conf_default_d['chan'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['channel'], chan))
+                f_new.write(line.replace(hostapd_conf_default_d['channel'], self.settings['channel']))
             elif hostapd_conf_default_d['passphrase'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['passphrase'], settings_d['passphrase']))
+                f_new.write(line.replace(hostapd_conf_default_d['passphrase'], self.settings['passphrase']))
             else:
                 f_new.write(line)
 
