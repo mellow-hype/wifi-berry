@@ -222,7 +222,7 @@ def menu_wizard_hostapd(settings_d):
         print(menu_wizard_hostapd_return)
 
 
-def menu_wizard_main():
+def menu_wizard_main(settings_d):
     """This is the configuration main menu. This menu contains further
         choices for selecting which configuration options to edit."""
 
@@ -270,6 +270,9 @@ def menu_wizard_main():
         if (my_menu_wizard_choices_l[
                 int(my_menu_wizard_return)-1] == 'Return to Main Menu'):
             return
+        elif (my_menu_wizard_choices_l[
+                int(my_menu_wizard_return)-1] == 'IP Configuration'):
+                settings_d.update
         else:
             my_menu_wizard_selections_d[
                 my_menu_wizard_choices_l[int(my_menu_wizard_return)-1]
