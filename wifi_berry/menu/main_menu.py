@@ -9,8 +9,8 @@
 # Import the Menu3 module.
 import menu3
 
-# Import core/install_modes module
-from wizard_main_menu import menu_wizard_main
+# Import wizard mode menus and final menu
+from wizard_main_menu import menu_wizard_main, final_menu
 from wifi_berry.core.config import BerryInit, BerryConfig
 
 def _menu_main_pre():
@@ -18,10 +18,8 @@ def _menu_main_pre():
 
 
 def menu_main(init, config):
-    """This function will run present the main menu to the user.
-        TODO: Identify inputs and outputs."""
-
-    # Call the pre-hook function, perform any intialization work needed.
+    """This function will run present the main menu to the user and
+        settings to be used for installation."""
 
     # Define the variables that are needed for the menu object.
     menu_main_info_str = '[Main Menu]'
@@ -29,7 +27,6 @@ def menu_main(init, config):
     menu_main_choices_l = [
         'Automagic Install',
         'Wizard Install',
-        'Help'
     ]
     menu_main_prompt_str = '[Selection]: '
 
@@ -81,7 +78,6 @@ def main():
     config.settings.update(menu_main())
 
     # Confirm final settings
-    from wizard_main_menu import final_menu
     final_menu()
 
     # Run installation procedure
