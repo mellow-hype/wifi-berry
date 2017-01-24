@@ -9,19 +9,17 @@
 # Import the Menu3 module.
 import menu3
 
-# Import core/install_modes module
-from wifi_berry.core.modes import automagic_install, wizard_install
+# Import wizard mode menus and final menu
+from wizard_main_menu import menu_wizard_main, final_menu
+from wifi_berry.core.config import BerryInit, BerryConfig
 
 def _menu_main_pre():
     """This functions contains any system/etc. actions we might need to """
 
 
-def menu_main():
-    """This function will run present the main menu to the user.
-        TODO: Identify inputs and outputs."""
-
-    # Call the pre-hook function, perform any intialization work needed.
-    _menu_main_pre()
+def menu_main(init, config):
+    """This function will run present the main menu to the user and
+        settings to be used for installation."""
 
     # Define the variables that are needed for the menu object.
     menu_main_info_str = '[Main Menu]'
@@ -29,7 +27,6 @@ def menu_main():
     menu_main_choices_l = [
         'Automagic Install',
         'Wizard Install',
-        'Help'
     ]
     menu_main_prompt_str = '[Selection]: '
 
@@ -50,16 +47,19 @@ def menu_main():
         # where the key is the menu choice text and the value is a function
         # pointer.
         menu_main_selections_d = {
-            'Automagic Install': automagic_install,
-            'Wizard Install': wizard_install,
-            'Exit': quit,
+            'Wizard Install': menu_wizard_main,
+            'Exit': quit
         }
 
         # Access the dictionary by finding the menu choice that was selected.
-        menu_main_selections_d[
-            menu_main_choices_l[int(menu_main_return)-1]
-        ]()
-
+        if (menu_main_choices_l[int(menu_main_return)-1] == 'Automagic Install'):
+            return
+        
+        # If selected, call wizard_main_menu, save it's return, and pass the settings
+        # dict back to main() to update the instance's settings attribute.
+        elif (menu_main_choices_l[int(menu_main_return)-1] == 'Wizard Install'):
+            settings = dict(menu_wizard_main)
+            return settings
     return
 
 
@@ -70,10 +70,28 @@ def main():
         TODO: Scaffold child menus"""
 
     # Place preemptive hooks/code here.
-    pass
+    init = BerryInit()
+    config = BerryConfig()
 
-    # Invoke the main menu.
-    menu_main()
+    # Invoke the main menu and update settings attribute with returned
+    # dictionary
+    config.settings.update(menu_main())
+
+    # Confirm final settings
+    final_menu()
+
+    # Run installation procedure
+    try:
+        init.dep_install()  # install dependencies
+        init.mod_dhcpcd(config.settings['interface'])   # modify dhcpcd.conf  
+        config.ipconf()     # static IP configuration
+        init.service_reload(config.settings['interface']) # reload dhcpcd and iface
+        config.hostapd_conf()   # configure hostapd
+        config.dnsmasq_conf()   # configure dnsmasq
+        init.ipv4_forward()     # enable IPv4 forwarding
+        init.net_conf()         # configure the NAT
+    except:
+        pass
 
     # Perform cleanup here.
     pass
