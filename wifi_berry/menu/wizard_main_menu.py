@@ -234,8 +234,11 @@ def menu_wizard_main(settings_d):
         'IP Configuration',
         'Access Point Configuration',
         'DNS Configuration',
+        '',
+        'Continue',
         'Return to Main Menu'
     ]
+
     my_menu_wizard_prompt_str = '[Prompt]: '
 
     # Instantiate and configure the menu object to allow quitting.
@@ -263,23 +266,38 @@ def menu_wizard_main(settings_d):
             'DNS Configuration': menu_wizard_dnsmasq
         }
 
+        settings_d = dict(settings_d)
+
         # Check if the return to main menu option was selected, otherwise
         # access the dictionary by finding the menu choice that was selected.
-        # TODO: Expand logic here so it checks what option was chosen and
-        # saves its returns to a variable for pushing data to the backend.
+
+        # Returnt to parent menu
         if (my_menu_wizard_choices_l[
                 int(my_menu_wizard_return)-1] == 'Return to Main Menu'):
             return
+
+        # IP configuration menu
         elif (my_menu_wizard_choices_l[
                 int(my_menu_wizard_return)-1] == 'IP Configuration'):
-                settings_d.update
-        else:
-            my_menu_wizard_selections_d[
-                my_menu_wizard_choices_l[int(my_menu_wizard_return)-1]
-            ]()
+            settings_d.update(menu_wizard_ip(settings_d.copy()))
+
+        # hostapd configuration menu
+        elif (my_menu_wizard_choices_l[
+                int(my_menu_wizard_return)-1] == 'Access Point Configuration'):
+            settings_d.update(menu_wizard_hostapd(settings_d.copy()))
+        
+        # dnsmasq configuration menu
+        elif (my_menu_wizard_choices_l[
+                int(my_menu_wizard_return)-1] == 'DNS Configuration'):
+            settings_d.update(menu_wizard_dnsmasq(settings_d.copy()))
+
+        # Return the dict with the updated settings back to main_menu()
+        elif (my_menu_wizard_choices_l[
+                int(my_menu_wizard_return)-1] == 'Continue'):
+            return settings_d
 
 
-def final_menu(ip_settings, ap_settings, dns_settings):
+def final_menu(settings):
     # Title, info, and prompt string for menu
     final_menu_info_str = '[Review and confirm settings for installation.]'
     final_menu_title_str = '[Confirm Installation]'
@@ -287,23 +305,8 @@ def final_menu(ip_settings, ap_settings, dns_settings):
     
     # Display final settings and ask for confirmation
     final_menu_choices_l = [
-        '-- IP Settings',
-        'IP: ' + ip_settings['ip'],
-        'Netmask: ' + ip_settings['netmask'],
-        'Network: ' + ip_settings['network'],
-        'Broadcast: ' + ip_settings['broadcast'],
-        '\n',
-        '-- AP Settings',
-        'Interface: ' + ap_settings['interface'],
-        'SSID: ' + ap_settings['ssid'],
-        'Channel: ' + ap_settings['channel'],
-        'Passphrase: ' + ap_settings['passphrase'],
-        '\n',
-        '-- DNS/DHCP Settings',
-        'Interface: ' + dns_settings['interface'],
-        'Upstream DNS: ' + dns_settings['upstream'],
-        'DHCP Settings: ' + dns_settings['dhcp-string'],
-        '\n\n\n'
+        '-- Confirm and Install',
+        '-- Cancel and return to main menu'
     ]
 
     # Instantiate and configure the menu object with option to quit
@@ -312,28 +315,21 @@ def final_menu(ip_settings, ap_settings, dns_settings):
 
     # Display the menu until they exit
     while(True):
+        # show current settings
+        settings = dict(settings)
+        for key, value in settings.items:
+            print(key + ' : ' + value)
+        
+        # configure the menu object and save its returns
         final_menu_return = final_menu_m.menu(
             title=final_menu_title_str,
             choices=final_menu_choices_l,
             prompt=final_menu_prompt_str
         )
 
-        # Import automagic_install
-        from ..core.modes import automagic_install
-
         if final_menu_return == 1:
-            try:
-                print('You confirmed installation')
-                automagic_install(ip_settings, ap_settings, dns_settings)
-            except:
-                print('Installation finished with errors.')
-            else:
-                print('Installation completed successfully')
-                quit()
-        elif final_menu_return == 2:
-            menu_wizard_main()
+            return
         else:
-            print('Use 1 or 2 to select how to proceed.')
-            continue
+            menu_wizard_main(settings)
 
 
