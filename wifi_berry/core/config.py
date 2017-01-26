@@ -368,8 +368,16 @@ def ip_converter(ip_addr, finbit):
     '''"Change the last bit of an IP to format as gateway, broadcast, etc.\
         (ip_addr = IP to modify, finbit = value for final field in IP)'''
 
-    cust_ip = list(ip_addr)
-    cust_ip[(len(ip_addr) - 1)] = finbit
-    fin = ''
-    return fin.join(cust_ip)
+    # split IP at dots (.)
+    from re import split
+    ip_split = split('\.', ip_addr)
+
+    # change the final bit to the value passed as finbit
+    ip_split[3] = finbit
+
+    # rejoin string with '.' between bits to rebuild IP
+    return_ip = ''
+    for bit in ip_split:
+        return_ip+=str(bit + '.')
+    return return_ip
     
