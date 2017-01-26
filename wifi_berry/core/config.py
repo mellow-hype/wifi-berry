@@ -69,8 +69,8 @@ class BerryInit:
         from subprocess import call
         print("Restarting dhcpcd and reloading interface configuration...")
         call(["sudo", "service", "dhcpcd", "restart"])
-        call(["sudo", "ifdown", iface])
-        call(["sudo", "ifup", iface])
+        call(["sudo", "ip", "link", "set", iface, "down"])
+        call(["sudo", "ip", "link", "set", iface, "up"])
         print("Service reload successful.")
 
 
