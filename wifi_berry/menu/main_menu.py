@@ -74,7 +74,10 @@ def main():
 
     # Invoke the main menu and update settings attribute with returned
     # dictionary
-    config.settings.update(menu_main())
+    try:
+        config.settings.update(menu_main())
+    except TypeError:
+        continue
 
     # Confirm final settings
     final_menu()
