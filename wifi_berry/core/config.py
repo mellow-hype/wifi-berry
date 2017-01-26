@@ -378,6 +378,9 @@ def ip_converter(ip_addr, finbit):
     # rejoin string with '.' between bits to rebuild IP
     return_ip = ''
     for bit in ip_split:
-        return_ip+=str(bit + '.')
+        if bit == finbit:
+            return_ip+=str(bit)
+        else:
+            return_ip+=str(bit + '.')
     return return_ip
     
