@@ -60,7 +60,6 @@ def menu_main():
         elif (menu_main_choices_l[int(menu_main_return)-1] == 'Wizard Install'):
             settings = dict(menu_wizard_main)
             return settings
-    return
 
 
 # Define the main runtime function.
