@@ -142,7 +142,7 @@ class BerryConfig:
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
     def __init__(self):
         from pickle import load
-        with open('configs/defaults.pickle', 'rb') as d:
+        with open("configs/defaults.pickle", 'rb') as d:
             self.settings = {}
             self.settings.update(load(d))
     
