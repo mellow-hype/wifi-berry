@@ -317,7 +317,7 @@ def final_menu(settings):
     while(True):
         # show current settings
         settings = dict(settings)
-        for key, value in settings.items:
+        for key, value in settings.keys, settings.values:
             print(key + ' : ' + value)
         
         # configure the menu object and save its returns
