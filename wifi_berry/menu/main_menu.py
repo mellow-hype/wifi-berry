@@ -17,7 +17,7 @@ def _menu_main_pre():
     """This functions contains any system/etc. actions we might need to """
 
 
-def menu_main(init, config):
+def menu_main():
     """This function will run present the main menu to the user and
         settings to be used for installation."""
 
