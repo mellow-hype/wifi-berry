@@ -77,7 +77,7 @@ def main():
     try:
         config.settings.update(menu_main())
     except TypeError:
-        continue
+        pass
 
     # Confirm final settings
     final_menu()
