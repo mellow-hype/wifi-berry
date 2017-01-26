@@ -222,7 +222,7 @@ class BerryConfig:
 
 
     # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
-    def hostapd_conf(self, settings_d):
+    def hostapd_conf(self):
         '''Modify /etc/hostapd.conf and /etc/default/hostapd with default settings if no \
             settings dict passed.'''
         # open source config for reading and dst config for writing
