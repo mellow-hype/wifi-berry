@@ -72,6 +72,7 @@ class BerryInit:
         call(["sudo", "ip", "link", "set", iface, "down"])
         call(["sudo", "ip", "link", "set", iface, "up"])
         print("Service reload successful.")
+        return
 
 
     # enable IPv4 forwarding
