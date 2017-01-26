@@ -10,7 +10,7 @@
 import menu3
 
 # Import wizard mode menus and final menu
-from wizard_main_menu import menu_wizard_main, final_menu
+from .wizard_main_menu import menu_wizard_main, final_menu
 from wifi_berry.core.config import BerryInit, BerryConfig
 
 def _menu_main_pre():
