@@ -80,7 +80,7 @@ def main():
         pass
 
     # Confirm final settings
-    final_menu()
+    final_menu(config.settings)
 
     # Run installation procedure
     try:
