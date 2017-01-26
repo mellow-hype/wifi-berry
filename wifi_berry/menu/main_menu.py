@@ -83,17 +83,16 @@ def main():
     final_menu(config.settings)
 
     # Run installation procedure
-    try:
-        init.dep_install()  # install dependencies
-        init.mod_dhcpcd(config.settings['interface'])   # modify dhcpcd.conf  
-        config.ipconf()     # static IP configuration
-        init.service_reload(config.settings['interface']) # reload dhcpcd and iface
-        config.hostapd_conf()   # configure hostapd
-        config.dnsmasq_conf()   # configure dnsmasq
-        init.ipv4_forward()     # enable IPv4 forwarding
-        init.net_conf()         # configure the NAT
-    except:
-        pass
+
+    init.dep_install()  # install dependencies
+    init.mod_dhcpcd(config.settings['interface'])   # modify dhcpcd.conf  
+    config.ipconf()     # static IP configuration
+    init.service_reload(config.settings['interface']) # reload dhcpcd and iface
+    config.hostapd_conf()   # configure hostapd
+    config.dnsmasq_conf()   # configure dnsmasq
+    init.ipv4_forward()     # enable IPv4 forwarding
+    init.net_conf()         # configure the NAT
+
 
     # Perform cleanup here.
     pass
