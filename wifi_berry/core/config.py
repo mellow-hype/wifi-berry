@@ -238,7 +238,7 @@ class BerryConfig:
                 f_new.write(line.replace(default_settings_d['interface'], self.settings['interface']))
             elif default_settings_d['ssid'] in line:
                 f_new.write(line.replace(default_settings_d['ssid'], self.settings['ssid']))
-            elif default_settings_d['chan'] in line:
+            elif default_settings_d['channel'] in line:
                 f_new.write(line.replace(default_settings_d['channel'], self.settings['channel']))
             elif default_settings_d['passphrase'] in line:
                 f_new.write(line.replace(default_settings_d['passphrase'], self.settings['passphrase']))
