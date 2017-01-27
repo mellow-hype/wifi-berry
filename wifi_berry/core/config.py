@@ -87,8 +87,9 @@ class BerryInit:
                 f_new.write(line.replace(orig, orig[1:]))
         print("Wrote changes to /etc/sysctl.conf.")
         from subprocess import call
+        cmd_string = "\"echo 1 > /proc/sys/net/ipv4/ip_forward\""
         call([
-            "sudo", "sh", "-c", """"echo 1 > /proc/sys/net/ipv4/ip_forward"""" 
+            "sudo", "sh", "-c", cmd_string 
         ])
         print("Enabled IPv4 forwarding")
         f_original.close()
