@@ -140,6 +140,11 @@ class BerryInit:
         reader.close()
         writer.close()
 
+        # make the new rc.local executable
+        call([
+            "sudo", "chmod", "+x", dRCLocal
+        ])
+
 
 # --------------------------------------------------------------------------- #
 # Install class that will handle modifying the config files with the
