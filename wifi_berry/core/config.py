@@ -146,6 +146,17 @@ class BerryInit:
         ])
 
 
+        # enable hostapd and dnsmasq services to be started on boot
+        def enable_services(self):
+            from subprocess import call
+            call([
+                "sudo", "update-rc.d", "hostapd", "enable"
+            ])
+
+            call([
+                "sudo", "update-rc.d", "dnsmasq", "enable"
+            ])
+
 # --------------------------------------------------------------------------- #
 # Install class that will handle modifying the config files with the
 # given values if present, otherwise uses the default settings laid out in the
