@@ -68,9 +68,9 @@ class BerryInit:
         '''Reload dhcpcd and reload config for interface'''
         from subprocess import call
         print("Restarting dhcpcd and reloading interface configuration...")
-        call(["sudo", "service", "dhcpcd", "restart"])
         call(["sudo", "ip", "link", "set", iface, "down"])
         call(["sudo", "ip", "link", "set", iface, "up"])
+        call(["sudo", "service", "dhcpcd", "restart"])
         print("Service reload successful.")
         return
 
@@ -83,8 +83,14 @@ class BerryInit:
         f_original = open((self.keep_orig(sysctl)), 'r')
         f_new = open(sysctl, 'w')
         for line in f_original:
-            f_new.write(line.replace(orig, orig[1:]))
-            print("Wrote changes to /etc/sysctl.conf.")
+            if orig in line:
+                f_new.write(line.replace(orig, orig[1:]))
+        print("Wrote changes to /etc/sysctl.conf.")
+        from subprocess import call
+        call([
+            "sudo", "sh", "-c", "\"echo 1 > /proc/sys/net/ipv4/ip_forward\""
+        ])
+        print("Enabled IPv4 forwarding")
         f_original.close()
         f_new.close()
 
@@ -112,7 +118,7 @@ class BerryInit:
             ])
 
         # Save iptables configuration for persistence after reboot.
-        call(["sudo", "sh", "-c", "iptables-save < /etc/iptables.ipv4.nat"])
+        call(["sudo", "sh", "-c", "\"iptables-save < /etc/iptables.ipv4.nat\""])
 
         # Modify /etc/rc.local so it loads our saved iptables settings upon reboot.
         reader = open((self.keep_orig(dRCLocal)), 'r')
@@ -120,9 +126,12 @@ class BerryInit:
 
         # replace existing 'exit 0' in file with iptables-restore
         for line in reader:
-            writer.write(line.replace(
-                'exit 0', 'iptables-restore < /etc/iptables.ipv4.nat'
-                ))
+            if 'exit 0' in line:
+                writer.write(line.replace(
+                    "exit 0", "iptables-restore < /etc/iptables.ipv4.nat"
+                    ))
+            else:
+                writer.write(line)
 
         # move position to eof and append 'exit 0' string
         writer.seek(0, 2)
