@@ -234,14 +234,14 @@ class BerryConfig:
         # iterate through each line searching for default values and replacing with
         # custom values
         for line in f_orig:
-            if hostapd_conf_default_d['interface'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['interface'], self.settings['interface']))
-            elif hostapd_conf_default_d['ssid'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['ssid'], self.settings['ssid']))
-            elif hostapd_conf_default_d['chan'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['channel'], self.settings['channel']))
-            elif hostapd_conf_default_d['passphrase'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['passphrase'], self.settings['passphrase']))
+            if default_settings_d['interface'] in line:
+                f_new.write(line.replace(default_settings_d['interface'], self.settings['interface']))
+            elif default_settings_d['ssid'] in line:
+                f_new.write(line.replace(default_settings_d['ssid'], self.settings['ssid']))
+            elif default_settings_d['chan'] in line:
+                f_new.write(line.replace(default_settings_d['channel'], self.settings['channel']))
+            elif default_settings_d['passphrase'] in line:
+                f_new.write(line.replace(default_settings_d['passphrase'], self.settings['passphrase']))
             else:
                 f_new.write(line)
 
