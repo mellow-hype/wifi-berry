@@ -96,8 +96,8 @@ def main():
 
     # Perform cleanup here.
     print('\n\nInstallation complete. You should reboot the system to \
-        ensure settings are persistent. The access point should now be \
-            visible as' + config.settings["ssid"] + '.\n\n')
+    ensure settings are persistent. The access point should now be \
+    visible as' + config.settings["ssid"] + '.\n\n')
 
     return
 
