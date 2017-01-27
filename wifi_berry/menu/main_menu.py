@@ -94,9 +94,10 @@ def main():
     init.net_conf()         # configure the NAT
     init.enable_services()  # enable services
 
-
     # Perform cleanup here.
-    pass
+    print('\n\nInstallation complete. You should reboot the system to \
+        ensure settings are persistent. The access point should now be \
+            visible as' + config.settings["ssid"] + '.\n\n')
 
     return
 
