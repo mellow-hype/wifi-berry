@@ -119,7 +119,8 @@ class BerryInit:
             ])
 
         # Save iptables configuration for persistence after reboot.
-        call(["sudo", "sh", "-c", """"iptables-save > /etc/iptables.ipv4.nat""""])
+        cmd_string = "\"iptables-save > /etc/iptables.ipv4.nat\""
+        call(["sudo", "sh", "-c", cmd_string])
 
         # Modify /etc/rc.local so it loads our saved iptables settings upon reboot.
         reader = open((self.keep_orig(dRCLocal)), 'r')
