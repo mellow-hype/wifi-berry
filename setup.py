@@ -14,4 +14,5 @@ setup(name='wifi_berry',
     entry_points = {
         'console_scripts': ['wifi-berry=wifi_berry.menu.main_menu:main'],
     },
+    include_package_data=True,
     zip_safe=False)

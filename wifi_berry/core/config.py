@@ -5,26 +5,18 @@
 import string
 
 # DEFAULT CONFIGURATION VALUES
-ip_conf_default_d = {
+default_settings_d = {
     'ip': '172.24.1.1',
     'netmask': '255.255.255.0',
     'network': '172.24.1.0',
-    'broadcast': '172.24.1.255'
-}
-
-hostapd_conf_default_d = {
+    'broadcast': '172.24.1.255',
     'interface': 'wlan0',
     'ssid': 'APname',
     'channel': 'channel=6',
-    'passphrase': 'raspberry1'
-}
-
-dnsmasq_conf_default_d = {
-    'interface': 'wlan0',
+    'passphrase': 'raspberry1',
     'upstream': '8.8.8.8',
     'dhcp-string': '172.24.1.50,172.24.1.150,12h'
 }
-
 
 # --------------------------------------------------------------------------- #
 # Initialization Class: these functions are used by both Automagic and Wizard 
@@ -76,10 +68,11 @@ class BerryInit:
         '''Reload dhcpcd and reload config for interface'''
         from subprocess import call
         print("Restarting dhcpcd and reloading interface configuration...")
+        call(["sudo", "ip", "link", "set", iface, "down"])
+        call(["sudo", "ip", "link", "set", iface, "up"])
         call(["sudo", "service", "dhcpcd", "restart"])
-        call(["sudo", "ifdown", iface])
-        call(["sudo", "ifup", iface])
         print("Service reload successful.")
+        return
 
 
     # enable IPv4 forwarding
@@ -87,11 +80,16 @@ class BerryInit:
         '''Enable IPv4 forwarding'''
         sysctl = '/etc/sysctl.conf'
         orig = '#net.ipv4.ip_forward=1'
-        f_original = open((keep_orig(sysctl)), 'r')
+        f_original = open((self.keep_orig(sysctl)), 'r')
         f_new = open(sysctl, 'w')
         for line in f_original:
-            f_new.write(line.replace(orig, orig[1:]))
-            print("Wrote changes to /etc/sysctl.conf.")
+            if orig in line:
+                f_new.write(line.replace(orig, orig[1:]))
+        print("Wrote changes to /etc/sysctl.conf.")
+        from subprocess import call
+        call([
+            "sudo", "sh", "-c", "echo 1 > /proc/sys/net/ipv4/ip_forward"])
+        print("Enabled IPv4 forwarding")
         f_original.close()
         f_new.close()
 
@@ -102,6 +100,7 @@ class BerryInit:
         # Import the subprocess.call() function.
         from subprocess import call
         dRCLocal = '/etc/rc.local'
+        print("Configuring NAT settings")
 
         # Configure NAT and port forwarding between interfaces.
         call([
@@ -119,17 +118,21 @@ class BerryInit:
             ])
 
         # Save iptables configuration for persistence after reboot.
-        call(["sudo", "sh", "-c", "iptables-save < /etc/iptables.ipv4.nat"])
+        call(["sudo", "sh", "-c", "iptables-save > /etc/iptables.ipv4.nat"])
+        print("Saved iptables settings to /etc/iptables.ipv4.nat")
 
         # Modify /etc/rc.local so it loads our saved iptables settings upon reboot.
-        reader = open((keep_orig(dRCLocal)), 'r')
+        reader = open((self.keep_orig(dRCLocal)), 'r')
         writer = open(dRCLocal, 'w')
 
         # replace existing 'exit 0' in file with iptables-restore
         for line in reader:
-            writer.write(line.replace(
-                'exit 0', 'iptables-restore < /etc/iptables.ipv4.nat'
-                ))
+            if 'exit 0' in line:
+                writer.write(line.replace(
+                    "exit 0", "iptables-restore < /etc/iptables.ipv4.nat"
+                    ))
+            else:
+                writer.write(line)
 
         # move position to eof and append 'exit 0' string
         writer.seek(0, 2)
@@ -139,21 +142,48 @@ class BerryInit:
         reader.close()
         writer.close()
 
+        # make the new rc.local executable
+        call([
+            "sudo", "chmod", "+x", dRCLocal
+        ])
+
+
+    # enable hostapd and dnsmasq services to be started on boot
+    def enable_services(self):
+        from subprocess import call
+        call([
+            "sudo", "update-rc.d", "hostapd", "enable"
+        ])
+        print("hostapd service enabled")
+        
+        call([
+            "sudo", "update-rc.d", "dnsmasq", "enable"
+        ])
+        print("dnsmasq service enabled")
 
 # --------------------------------------------------------------------------- #
 # Install class that will handle modifying the config files with the
 # given values if present, otherwise uses the default settings laid out in the
 # dictionaries at the top of this file.
 # --------------------------------------------------------------------------- #
-class BerryConfig:
+
+class BerryConfig(BerryInit):
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
+    def __init__(self):
+        from pickle import load
+        with open("wifi_berry/core/configs/defaults.pickle", 'rb') as d:
+            self.settings = {}
+            self.settings.update(load(d))
+    
+    def write_settings():
+        pass
 
     # Static IP configuration @ /etc/network/interfaces
-    def ipconf(self, settings_d):
+    def ipconf(self):
         '''Modify /etc/network/interfaces with default settings if no\
              settings dict passed.''' 
         # open provided config file for reading and the user's for writing
-        sIfaceConf = 'configs/iface.conf'
+        sIfaceConf = 'wifi_berry/core/configs/iface.conf'
         dIfaceConf = '/etc/network/interfaces'
         f_orig = open(sIfaceConf, 'r')
         f_new = open(dIfaceConf, 'w')
@@ -162,23 +192,23 @@ class BerryConfig:
         # with custom values
         for line in f_orig:
             # modify address value
-            if ip_conf_default_d['address'] in line:
+            if default_settings_d['ip'] in line:
                 f_new.write(line.replace(
-                    ip_conf_default_d['address'], settings_d['address']))
+                    default_settings_d['ip'], self.settings['ip']))
             # modify netmask value
-            elif ip_conf_default_d['netmask'] in line:
+            elif default_settings_d['netmask'] in line:
                 f_new.write(line.replace(
-                    ip_conf_default_d['netmask'], settings_d['netmask']))
+                    default_settings_d['netmask'], self.settings['netmask']))
             # modify network address value
-            elif ip_conf_default_d['network'] in line:
+            elif default_settings_d['network'] in line:
                 f_new.write(line.replace(
-                    ip_conf_default_d['network'], ip_converter(
-                                    settings_d['network'], '0')))
+                    default_settings_d['network'], ip_converter(
+                                    self.settings['network'], '0')))
             # modify broadcast value
-            elif ip_conf_default_d['broadcast'] in line:
+            elif default_settings_d['broadcast'] in line:
                 f_new.write(line.replace(
-                    ip_conf_default_d['broadcast'], ip_converter(
-                                    settings_d['broadcast'], '255')))
+                    default_settings_d['broadcast'], ip_converter(
+                                    self.settings['broadcast'], '255')))
             # if nothing to modify, write the line
             else:
                 f_new.write(line)
@@ -189,12 +219,12 @@ class BerryConfig:
 
 
     # dnsmasq configuration @ /etc/dnsmasq.conf
-    def dnsmasq_conf(self, settings_d):
+    def dnsmasq_conf(self):
         '''Modify /etc/dnsmasq.conf with default settings if no settings dict \
             passed.''' 
         # open source config for reading and dst config for writing
         dDnsmasqConf = '/etc/dnsmasq.conf'
-        sDnsmasqConf = 'configs/dnsmasq.conf'
+        sDnsmasqConf = 'wifi_berry/core/configs/dnsmasq.conf'
         f_orig = open(sDnsmasqConf, 'r')
         f_new = open(dDnsmasqConf, 'w')
 
@@ -202,14 +232,14 @@ class BerryConfig:
         # custom values
         for line in f_orig:
             # modify interface
-            if dnsmasq_conf_default_d['interface'] in line:
-                f_new.write(line.replace(dnsmasq_conf_default_d['interface'], iface_in))
+            if default_settings_d['interface'] in line:
+                f_new.write(line.replace(default_settings_d['interface'], self.settings['interface']))
             # modify upstream DNS server
-            elif dnsmasq_conf_default_d['upstream'] in line:
-                f_new.write(line.replace(dnsmasq_conf_default_d['upstream'], upstr))
+            elif default_settings_d['upstream'] in line:
+                f_new.write(line.replace(default_settings_d['upstream'], self.settings['upstream']))
             # modify dhcp range and least time limit
-            elif dnsmasq_conf_default_d['dhcp-string'] in line:
-                f_new.write(line.replace(dnsmasq_conf_default_d['dhcp-string'], settings_d['dhcp-string']))
+            elif default_settings_d['dhcp-string'] in line:
+                f_new.write(line.replace(default_settings_d['dhcp-string'], self.settings['dhcp-string']))
             else:
                 f_new.write(line)
 
@@ -220,11 +250,11 @@ class BerryConfig:
 
 
     # Access point (hostapd) configuration at /etc/hostapd/hostapd.conf
-    def hostapd_conf(self, settings_d):
+    def hostapd_conf(self):
         '''Modify /etc/hostapd.conf and /etc/default/hostapd with default settings if no \
             settings dict passed.'''
         # open source config for reading and dst config for writing
-        sHostapdConf = 'configs/hostapd.conf'
+        sHostapdConf = 'wifi_berry/core/configs/hostapd.conf'
         dHostapdConf = '/etc/hostapd/hostapd.conf'
         f_orig = open(sHostapdConf, 'r')
         f_new = open(dHostapdConf, 'w')
@@ -232,14 +262,14 @@ class BerryConfig:
         # iterate through each line searching for default values and replacing with
         # custom values
         for line in f_orig:
-            if hostapd_conf_default_d['interface'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['iface'], iface_in))
-            elif hostapd_conf_default_d['ssid'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['ssid'], ssid))
-            elif hostapd_conf_default_d['chan'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['channel'], chan))
-            elif hostapd_conf_default_d['passphrase'] in line:
-                f_new.write(line.replace(hostapd_conf_default_d['passphrase'], settings_d['passphrase']))
+            if default_settings_d['interface'] in line:
+                f_new.write(line.replace(default_settings_d['interface'], self.settings['interface']))
+            elif default_settings_d['ssid'] in line:
+                f_new.write(line.replace(default_settings_d['ssid'], self.settings['ssid']))
+            elif default_settings_d['channel'] in line:
+                f_new.write(line.replace(default_settings_d['channel'], self.settings['channel']))
+            elif default_settings_d['passphrase'] in line:
+                f_new.write(line.replace(default_settings_d['passphrase'], self.settings['passphrase']))
             else:
                 f_new.write(line)
 
@@ -253,7 +283,7 @@ class BerryConfig:
         hostapdDefault = '/etc/default/hostapd'
         daemonStr = '#DAEMON_CONF=""'
         daemonStrX = 'DAEMON_CONF="/etc/hostapd/hostapd.conf"'
-        f_original = open(keep_orig(hostapdDefault), 'r')
+        f_original = open(self.keep_orig(hostapdDefault), 'r')
         f_new = open(hostapdDefault, 'w')
         print("Editing /etc/default/hostapd...")
         for line in f_original:
@@ -262,9 +292,12 @@ class BerryConfig:
         f_new.close()
         print("Done editing /etc/default/hostapd.\n hostapd configuration complete.")
 
+
 # --------------------------------------------------------------------------- #
 # Wizard Mode Input utilities: auxiliary functions for gathering input
 # --------------------------------------------------------------------------- #
+
+
 # Get desired SSID
 def get_ssid():
     ''' Prompt the user for the desired SSID and do length checking.
@@ -364,8 +397,19 @@ def ip_converter(ip_addr, finbit):
     '''"Change the last bit of an IP to format as gateway, broadcast, etc.\
         (ip_addr = IP to modify, finbit = value for final field in IP)'''
 
-    cust_ip = list(ip_addr)
-    cust_ip[(len(ip_addr) - 1)] = finbit
-    fin = ''
-    return fin.join(cust_ip)
+    # split IP at dots (.)
+    from re import split
+    ip_split = split('\.', ip_addr)
+
+    # change the final bit to the value passed as finbit
+    ip_split[3] = finbit
+
+    # rejoin string with '.' between bits to rebuild IP
+    return_ip = ''
+    for bit in ip_split:
+        if bit == finbit:
+            return_ip+=str(bit)
+        else:
+            return_ip+=str(bit + '.')
+    return return_ip
     

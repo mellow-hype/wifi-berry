@@ -99,15 +99,8 @@ def dnsmasq_upstream_menu():
 
 
 # Main dnsmasq configuration menu
-def menu_wizard_dnsmasq(presets_d):
+def menu_wizard_dnsmasq(settings_d):
     '''dnsmasq configuration main menu'''
-
-    # Import the default dnsmasq config values
-    from ..core.config import dnsmasq_conf_default_d
-    dnsmasq_conf_d = dnsmasq_conf_default_d
-
-    # Set the interface value from presets_d
-    dnsmasq_conf_d["interface"] = presets_d["interface"]
 
     # Define the variables that are needed for the configuration menu.
     main_dnsmasq_info_str = '[Configure DNS and DHCP settings]'
@@ -143,12 +136,12 @@ def menu_wizard_dnsmasq(presets_d):
 
         # TODO: Selection handling -- check which option the user chose, call
         # the function, and save it's return to the appropriate key in
-        # dnsmasq_conf_d (look in core/core.py to find its keys:values)
+        # settings_d, then pass it back to update current settings
         if main_dnsmasq_choices_l[int(main_dnsmasq_return)-1] == "Upstream DNS":
-            dnsmasq_conf_d["upstream"] = \
+            settings_d["upstream"] = \
                 main_dnsmasq_selections_d["Upstream DNS"]()
         elif main_dnsmasq_choices_l[int(main_dnsmasq_return)-1] == "DHCP Settings":
-            dnsmasq_conf_d["dhcp-string"] = \
-                main_dnsmasq_selections_d["DHCP Settings"](presets_d["network"])
+            settings_d["dhcp-string"] = \
+                main_dnsmasq_selections_d["DHCP Settings"](settings_d["network"])
         else:
-            return dnsmasq_conf_d
+            return settings_d
