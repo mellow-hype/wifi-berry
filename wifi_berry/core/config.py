@@ -100,6 +100,7 @@ class BerryInit:
         # Import the subprocess.call() function.
         from subprocess import call
         dRCLocal = '/etc/rc.local'
+        print("Configuring NAT settings")
 
         # Configure NAT and port forwarding between interfaces.
         call([
@@ -118,6 +119,7 @@ class BerryInit:
 
         # Save iptables configuration for persistence after reboot.
         call(["sudo", "sh", "-c", "iptables-save > /etc/iptables.ipv4.nat"])
+        print("Saved iptables settings to /etc/iptables.ipv4.nat")
 
         # Modify /etc/rc.local so it loads our saved iptables settings upon reboot.
         reader = open((self.keep_orig(dRCLocal)), 'r')
@@ -152,10 +154,12 @@ class BerryInit:
         call([
             "sudo", "update-rc.d", "hostapd", "enable"
         ])
-
+        print("hostapd service enabled")
+        
         call([
             "sudo", "update-rc.d", "dnsmasq", "enable"
         ])
+        print("dnsmasq service enabled")
 
 # --------------------------------------------------------------------------- #
 # Install class that will handle modifying the config files with the
