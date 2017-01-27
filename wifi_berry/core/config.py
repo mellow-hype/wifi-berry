@@ -88,7 +88,7 @@ class BerryInit:
         print("Wrote changes to /etc/sysctl.conf.")
         from subprocess import call
         call([
-            "sudo", "sh", "-c", "\"echo 1 > /proc/sys/net/ipv4/ip_forward\""
+            "sudo", "sh", "-c", """"echo 1 > /proc/sys/net/ipv4/ip_forward"""" 
         ])
         print("Enabled IPv4 forwarding")
         f_original.close()
@@ -118,7 +118,7 @@ class BerryInit:
             ])
 
         # Save iptables configuration for persistence after reboot.
-        call(["sudo", "sh", "-c", "\"iptables-save < /etc/iptables.ipv4.nat\""])
+        call(["sudo", "sh", "-c", """"iptables-save > /etc/iptables.ipv4.nat\""""])
 
         # Modify /etc/rc.local so it loads our saved iptables settings upon reboot.
         reader = open((self.keep_orig(dRCLocal)), 'r')
