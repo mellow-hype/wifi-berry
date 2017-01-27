@@ -80,7 +80,7 @@ class BerryInit:
         '''Enable IPv4 forwarding'''
         sysctl = '/etc/sysctl.conf'
         orig = '#net.ipv4.ip_forward=1'
-        f_original = open((keep_orig(sysctl)), 'r')
+        f_original = open((self.keep_orig(sysctl)), 'r')
         f_new = open(sysctl, 'w')
         for line in f_original:
             f_new.write(line.replace(orig, orig[1:]))
@@ -115,7 +115,7 @@ class BerryInit:
         call(["sudo", "sh", "-c", "iptables-save < /etc/iptables.ipv4.nat"])
 
         # Modify /etc/rc.local so it loads our saved iptables settings upon reboot.
-        reader = open((keep_orig(dRCLocal)), 'r')
+        reader = open((self.keep_orig(dRCLocal)), 'r')
         writer = open(dRCLocal, 'w')
 
         # replace existing 'exit 0' in file with iptables-restore
