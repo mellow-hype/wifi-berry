@@ -92,6 +92,7 @@ def main():
     config.dnsmasq_conf()   # configure dnsmasq
     init.ipv4_forward()     # enable IPv4 forwarding
     init.net_conf()         # configure the NAT
+    init.enable_services()  # enable services
 
 
     # Perform cleanup here.
