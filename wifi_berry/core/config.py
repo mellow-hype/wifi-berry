@@ -139,7 +139,7 @@ class BerryInit:
 # dictionaries at the top of this file.
 # --------------------------------------------------------------------------- #
 
-class BerryConfig(BerryInit.keep_orig):
+class BerryConfig(BerryInit):
     '''Main functions for pushing settings to dnsmasq, IP, and hostapd'''
     def __init__(self):
         from pickle import load
@@ -255,7 +255,7 @@ class BerryConfig(BerryInit.keep_orig):
         hostapdDefault = '/etc/default/hostapd'
         daemonStr = '#DAEMON_CONF=""'
         daemonStrX = 'DAEMON_CONF="/etc/hostapd/hostapd.conf"'
-        f_original = open(BerryInit.keep_orig(hostapdDefault), 'r')
+        f_original = open(self.keep_orig(hostapdDefault), 'r')
         f_new = open(hostapdDefault, 'w')
         print("Editing /etc/default/hostapd...")
         for line in f_original:
