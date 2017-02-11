@@ -5,18 +5,23 @@ import menu3
 # --------------------------------------------------------------------------- #
 # This section includes helper functions for input gathering, for the menu.
 # --------------------------------------------------------------------------- #
+
 def dhcp_ranger(network):
-    '''Get DHCP settings'''
+    '''Get DHCP settings and generate a DHCP config string.'''
     
+    # Start 
     start_str = 'Start of range(1-254): '
     start = input(start_str)
 
+    # End
     end_str = 'End of range(1-254) '
     end = input(end_str)
 
+    # Lease time
     lease_str = 'Lease time (hrs): '
     lease = input(lease_str)
 
+    # Some validation
     try:
         if int(end) <= int(start):
             print('End of range must be greater than start. Retry')
@@ -28,6 +33,7 @@ def dhcp_ranger(network):
         print('Wrong input type. Only numeric characters are needed.')
         dhcp_ranger(network)
 
+    # Build the DHCP settings string
     dhcp_string = \
         network[:len(network)-1] + str(start) + ',' + network[:len(network)-1] +\
             str(end) + ',' + lease + 'h'
@@ -92,10 +98,10 @@ def dnsmasq_upstream_menu():
                 prompt=dnsmasq_upstream_menu_prompt
             )
 
+        # Selection handling
         return dnsmasq_upstream_menu_selections_d[
             dnsmasq_upstream_menu_choices_l[int(dnsmasq_upstream_menu_menu_return)-1]
         ]
-
 
 
 # Main dnsmasq configuration menu
@@ -134,7 +140,7 @@ def menu_wizard_dnsmasq(settings_d):
             'DHCP Settings': dhcp_ranger
         }
 
-        # TODO: Selection handling -- check which option the user chose, call
+        # Selection handling -- check which option the user chose, call
         # the function, and save it's return to the appropriate key in
         # settings_d, then pass it back to update current settings
         if main_dnsmasq_choices_l[int(main_dnsmasq_return)-1] == "Upstream DNS":

@@ -1,7 +1,6 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # Core Functions + Definitions
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
 import string
 
 # DEFAULT CONFIGURATION VALUES
@@ -24,7 +23,8 @@ default_settings_d = {
 # --------------------------------------------------------------------------- #
 
 class BerryInit:
-
+    '''Initialization class for wifi-berry.'''
+    
     # Save original configs for uninstall
     def keep_orig(self, file_path):
         from subprocess import call
